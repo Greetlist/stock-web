@@ -5,5 +5,6 @@ import (
 )
 
 func RunServer(bindAddr string, bindPort int) {
+    StaticDir["/static"] = "static"
     web.Run()
 }

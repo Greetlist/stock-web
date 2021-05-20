@@ -13,5 +13,5 @@ func (this *MainController) ShowHomePage() {
 }
 
 func (this *MainController) Test() {
-    this.Ctx.WriteString("Test Page")
+    this.TplName = "test.tpl"
 }
