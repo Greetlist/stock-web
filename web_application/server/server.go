@@ -4,6 +4,6 @@ import (
     "github.com/beego/beego/v2/server/web"
 )
 
-func RunServer() {
+func RunServer(bindAddr string, bindPort int) {
     web.Run()
 }

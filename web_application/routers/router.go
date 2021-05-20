@@ -2,9 +2,10 @@ package routers
 
 import (
     "github.com/beego/beego/v2/server/web"
-    "controller"
+    "greetlist/stock-web/web_application/controllers"
 )
 
 func init() {
-    web.Router("/", &controller.MainController{}, "Get:ShowHomePage")
+    web.Router("/", &controllers.MainController{}, "*:ShowHomePage")
+    web.Router("/test", &controllers.MainController{}, "*:Test")
 }

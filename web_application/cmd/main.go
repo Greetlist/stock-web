@@ -4,7 +4,8 @@ import (
     "github.com/spf13/cobra"
     "fmt"
     "os"
-    "server"
+    "greetlist/stock-web/web_application/server"
+    _ "greetlist/stock-web/web_application/routers"
 )
 
 var (
@@ -13,16 +14,16 @@ var (
 )
 
 var rootCmd = &cobra.Command {
-    Use: "Statistic Web",
+    Use: "./web --bind_addr addr --bind_port port",
     Short: "Statistic Web show Stock data automatic",
-    Run: func (cmd *cobra.Command, args []string) error {
-        server.RunServer()
-    }
+    Run: func (cmd *cobra.Command, args []string) {
+        server.RunServer(bindAddr, bindPort)
+    },
 }
 
 func init() {
-    rootCmd.PersistentFlags().StringVarP(&bindAddr, "bind_addr", "0.0.0.0", "server bind interface")
-    rootCmd.PersistentFlags().IntVarP(&bindPort, "bind_port", "8080", "server bind port")
+    rootCmd.PersistentFlags().StringVarP(&bindAddr, "bind_addr", "", "0.0.0.0", "server bind interface")
+    rootCmd.PersistentFlags().IntVarP(&bindPort, "bind_port", "", 8080, "server bind port")
 }
 
 func Execute() {
