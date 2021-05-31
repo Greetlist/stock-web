@@ -1,0 +1,22 @@
+basePath: /
+info:
+  contact:
+    email: lrt12250914@outlook.com
+    name: Greetlist
+    url: http://github.com/greetlist
+  description: server API for stock web
+  termsOfService: http://github.com/greetlist/
+  title: Stock-Show Web API
+  version: "1.0"
+paths:
+  /test:
+    get:
+      description: get string by ID
+      operationId: test
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Show a account
+swagger: "2.0"

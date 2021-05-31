@@ -8,7 +8,7 @@ echo $new_version > version.txt
 
 sudo docker rmi -f stock-web:$old_version
 
-cd web_application
+cd server
 go build cmd/main.go
 cd -
 sudo docker build -t stock-web:$new_version .
