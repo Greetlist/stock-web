@@ -1,4 +1,39 @@
 basePath: /
+definitions:
+  model.GetQueryStockDataResponse:
+    properties:
+      stock_datas:
+        items:
+          $ref: '#/definitions/model.StockDataItem'
+        type: array
+    type: object
+  model.SingleRecord:
+    properties:
+      close:
+        type: number
+      date:
+        type: string
+      high:
+        type: number
+      low:
+        type: number
+      money:
+        type: number
+      open:
+        type: number
+      volume:
+        type: number
+    type: object
+  model.StockDataItem:
+    properties:
+      records:
+        items:
+          $ref: '#/definitions/model.SingleRecord'
+        type: array
+      stock_code:
+        example: "002142"
+        type: string
+    type: object
 info:
   contact:
     email: lrt12250914@outlook.com
@@ -9,14 +44,30 @@ info:
   title: Stock-Show Web API
   version: "1.0"
 paths:
-  /test:
+  /api/stock/getDailyStockData:
     get:
-      description: get string by ID
-      operationId: test
+      consumes:
+      - application/json
+      description: Return Strategy Daily Computed Data
+      operationId: queryDailyStockData
       produces:
       - application/json
       responses:
         "200":
           description: ""
-      summary: Show a account
+      summary: Query Daily Stock Computed Data
+  /api/stock/getQueryStockData:
+    post:
+      consumes:
+      - application/json
+      description: Return Strategy Sepcific Computed Data
+      operationId: getQueryStockData
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetQueryStockDataResponse'
+      summary: Query Sepcific Stock Computed Data
 swagger: "2.0"

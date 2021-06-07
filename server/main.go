@@ -9,7 +9,7 @@ import (
 
 var (
     bindAddr string
-    bindPort int
+    bindPort int64
 )
 
 var rootCmd = &cobra.Command {
@@ -22,7 +22,7 @@ var rootCmd = &cobra.Command {
 
 func init() {
     rootCmd.PersistentFlags().StringVarP(&bindAddr, "bind_addr", "", "0.0.0.0", "server bind interface")
-    rootCmd.PersistentFlags().IntVarP(&bindPort, "bind_port", "", 8080, "server bind port")
+    rootCmd.PersistentFlags().Int64VarP(&bindPort, "bind_port", "", 8080, "server bind port")
 }
 
 func Execute() {

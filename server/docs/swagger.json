@@ -13,18 +13,96 @@
     },
     "basePath": "/",
     "paths": {
-        "/test": {
+        "/api/stock/getDailyStockData": {
             "get": {
-                "description": "get string by ID",
+                "description": "Return Strategy Daily Computed Data",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Show a account",
-                "operationId": "test",
+                "summary": "Query Daily Stock Computed Data",
+                "operationId": "queryDailyStockData",
                 "responses": {
                     "200": {
                         "description": ""
                     }
+                }
+            }
+        },
+        "/api/stock/getQueryStockData": {
+            "post": {
+                "description": "Return Strategy Sepcific Computed Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Query Sepcific Stock Computed Data",
+                "operationId": "getQueryStockData",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetQueryStockDataResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.GetQueryStockDataResponse": {
+            "type": "object",
+            "properties": {
+                "stock_datas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockDataItem"
+                    }
+                }
+            }
+        },
+        "model.SingleRecord": {
+            "type": "object",
+            "properties": {
+                "close": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "high": {
+                    "type": "number"
+                },
+                "low": {
+                    "type": "number"
+                },
+                "money": {
+                    "type": "number"
+                },
+                "open": {
+                    "type": "number"
+                },
+                "volume": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.StockDataItem": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.SingleRecord"
+                    }
+                },
+                "stock_code": {
+                    "type": "string",
+                    "example": "002142"
                 }
             }
         }

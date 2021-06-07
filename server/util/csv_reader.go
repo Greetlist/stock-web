@@ -7,13 +7,16 @@ import (
     "io"
     "strings"
     "errors"
+    "strconv"
+
+    "greetlist/stock-web/server/model"
 )
 
 //type DataRow []string
 
 type CsvReader struct {
     Head []string
-    Data [][]string
+    Data []model.SingleRecord
 }
 
 func (reader *CsvReader) ReadCsv(fileName string) error {
@@ -39,8 +42,9 @@ func (reader *CsvReader) ReadCsv(fileName string) error {
                 }
                 readHead = true
             } else {
-                dataRow := strings.Split(lineString, ",")
-                reader.Data = append(reader.Data, dataRow)
+                rawData := strings.Split(lineString, ",")
+                singleRecord := convertRawData(rawData)
+                reader.Data = append(reader.Data, singleRecord)
             }
         }
         if err != nil || isPrefix {
@@ -62,4 +66,17 @@ func checkHead(head []string) bool {
     }
     return true
 }
+
+func convertRawData(rawData []string) model.SingleRecord {
+    record := model.SingleRecord{}
+    record.Date = rawData[0]
+    record.Open, _ = strconv.ParseFloat(rawData[1], 64)
+    record.Close, _ = strconv.ParseFloat(rawData[2], 64)
+    record.High, _ = strconv.ParseFloat(rawData[3], 64)
+    record.Low, _ = strconv.ParseFloat(rawData[4], 64)
+    record.Volume, _ = strconv.ParseFloat(rawData[5], 64)
+    record.Money, _ = strconv.ParseFloat(rawData[6], 64)
+    return record
+}
+
 
