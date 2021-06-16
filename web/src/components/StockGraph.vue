@@ -14,6 +14,10 @@ import {
   DataZoomComponent
 } from 'echarts/components'
 import VChart from 'vue-echarts'
+const axios = require('axios').default
+const header = {
+  'Access-Control-Allow-Origin': '*'
+}
 
 use([
   CanvasRenderer,
@@ -24,7 +28,6 @@ use([
   DataZoomComponent,
   CandlestickChart
 ])
-
 export default {
   name: 'StockGraph',
   components: {
@@ -44,7 +47,7 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: this.mockDate(),
+            data: this.dateList,
             scale: true,
             axisLine: { onZero: false },
             splitLine: { show: true }
@@ -66,50 +69,36 @@ export default {
         ],
         series: [{
           type: 'candlestick',
-          data: this.mockData()
+          data: this.dataList,
+          itemStyle: {
+            color: '#c23531',
+            color0: '#314656',
+            borderColor: '#c23531',
+            borderColor0: '#314656'
+          }
         }]
       },
-      dailyStockData,
-      queryStockData
+      stockCode: '',
+      dateList: [],
+      dataList: [],
+      volumeList: [],
+      moneyList: []
     }
   },
   created: function () {
-    const header = {
-      'Access-Control-Allow-Origin': '*'
-    }
-    axios.get('http://121.5.100.186:8081/test', header)
-      .then(function (response) {
-        console.log(response)
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-      .then(function () {
-        console.log('Finish Post Request')
-      })
   },
   methods: {
-    mockDate: function () {
-      var dateList = []
-      var year = '2020'
-      for (var i = 1; i <= 12; i++) {
-        for (var j = 1; j < 31; j++) {
-          var curStr = year + '-' + i.toString() + '-' + j.toString()
-          dateList.push(curStr)
-        }
+    getQueryStockData: function () {
+      var param = {
+        stock_list: [this.stockCode]
       }
-      console.log(dateList)
-      return dateList
-    },
-    mockData: function () {
-      var dataList = []
-      for (var i = 1; i <= 12; i++) {
-        for (var j = 1; j < 31; j++) {
-          var curData = [10, 15, 10, 15]
-          dataList.push(curData)
-        }
-      }
-      return dataList
+      axios.post('http://121.5.100.186:8081/api/stock/getQueryStockData', param, { header })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   }
 }

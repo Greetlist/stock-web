@@ -5,9 +5,14 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: () => import('../views/Home.vue')
+    path: '/dailyOverView',
+    name: 'DailyOverView',
+    component: () => import('@/views/DailyOverView.vue')
+  },
+  {
+    path: '/queryStockView',
+    name: 'queryStockView',
+    component: () => import('@/views/QueryStockView.vue')
   }
 ]
 
