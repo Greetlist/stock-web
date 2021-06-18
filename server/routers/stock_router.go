@@ -9,4 +9,5 @@ func InitStockApiRouter(RouterGroup *gin.RouterGroup) {
     StockRouterGroup := RouterGroup.Group("stock")
     StockRouterGroup.GET("/getDailyStockData", api.GetDailyStockData)
     StockRouterGroup.POST("/getQueryStockData", api.GetQueryStockData)
+    StockRouterGroup.GET("/getAllStockCode", api.GetAllStockCode)
 }

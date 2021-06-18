@@ -2,7 +2,8 @@
   <el-autocomplete
     v-model="selectedCode"
     :fetch-suggestions="getSuggestionStockList"
-    placeholder="Input StockCode">
+    placeholder="Input StockCode"
+    v-on="selfListener">
   </el-autocomplete>
 </template>
 
@@ -47,6 +48,13 @@ export default {
       return (codeItem) => {
         return (codeItem.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
+    }
+  },
+  computed: {
+    selfListener: function () {
+      return Object.assign({},
+        this.$listeners
+      )
     }
   }
 }

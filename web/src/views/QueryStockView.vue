@@ -1,7 +1,7 @@
 <template>
   <div>
-    <StockSelectInput></StockSelectInput>
-    <StockGraph v-if="show"></StockGraph>
+    <StockSelectInput ref="stockInput" v-on:select="updateStockData"></StockSelectInput>
+    <StockGraph ref="stockGraph"></StockGraph>
   </div>
 </template>
 
@@ -12,13 +12,18 @@ export default {
   name: 'StockOverView',
   data: function () {
     return {
-      show: true,
       selectCode: ''
     }
   },
   components: {
     StockGraph,
     StockSelectInput
+  },
+  methods: {
+    updateStockData: function () {
+      var stockCode = this.$refs.stockInput.selectedCode
+      this.$refs.stockGraph.getQueryStockData(stockCode)
+    }
   }
 }
 </script>

@@ -76,6 +76,9 @@ func convertRawData(rawData []string) model.SingleRecord {
     record.Low, _ = strconv.ParseFloat(rawData[4], 64)
     record.Volume, _ = strconv.ParseFloat(rawData[5], 64)
     record.Money, _ = strconv.ParseFloat(rawData[6], 64)
+    record.Ma13, _ = strconv.ParseFloat(rawData[7], 64)
+    record.Ma34, _ = strconv.ParseFloat(rawData[11], 64)
+    record.Ma55, _ = strconv.ParseFloat(rawData[15], 64)
     return record
 }
 

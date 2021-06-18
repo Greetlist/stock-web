@@ -1,7 +1,7 @@
 package model
 
 type GetQueryStockDataRequest struct {
-    StockList []string `json:"stock_list" example:"['000001', '002142', ...]" binding:"required"`
+    StockList []string `json:"stock_list" example:['000001', '002142', ...] binding:"required"`
 }
 
 type SingleRecord struct {
@@ -12,6 +12,9 @@ type SingleRecord struct {
     Low float64 `json:"low"`
     Volume float64 `json:"volume"`
     Money float64 `json:"money"`
+    Ma13 float64 `json:"ma13"`
+    Ma34 float64 `json:"ma34"`
+    Ma55 float64 `json:"ma55"`
 }
 
 type StockDataItem struct {
@@ -21,4 +24,8 @@ type StockDataItem struct {
 
 type GetQueryStockDataResponse struct {
     StockDatas []StockDataItem `json:"stock_datas"`
+}
+
+type GetAllStockCodeResponse struct {
+    StockList []string `json:"stock_list" example:"['000001', '002142', ...]"`
 }

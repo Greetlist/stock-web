@@ -2,6 +2,7 @@ package api
 
 import (
     "net/http"
+    "io/ioutil"
     "github.com/gin-gonic/gin"
     "greetlist/stock-web/server/model"
     "greetlist/stock-web/server/conf"
@@ -25,6 +26,7 @@ func GetDailyStockData(context *gin.Context) {
 // @ID getQueryStockData
 // @Accept json
 // @Produce json
+// @Param request_json body model.GetQueryStockDataRequest true "Query Stock List"
 // @Success 200 {object} model.GetQueryStockDataResponse
 // @Router /api/stock/getQueryStockData [post]
 func GetQueryStockData(context *gin.Context) {
@@ -38,17 +40,32 @@ func GetQueryStockData(context *gin.Context) {
     for _, stockCode := range(request.StockList) {
         var stockDataItem model.StockDataItem
         stockDataItem.StockCode = stockCode
-        exchangeId := ".XSHE"
-        if stockCode[0] == '6' {
-            exchangeId = ".XSHG"
-        }
-        stockFilePath := conf.StockResultBaseDir + stockCode + exchangeId + "/result_ma.csv"
+        stockFilePath := conf.StockResultBaseDir + stockCode + "/result_ma.csv"
         csvReader := util.CsvReader{}
         csvReader.ReadCsv(stockFilePath)
         dataLen := len(csvReader.Data)
-        startIndex := dataLen / 7
+        startIndex := dataLen - dataLen / 7
         stockDataItem.Records = csvReader.Data[startIndex:]
         response.StockDatas = append(response.StockDatas, stockDataItem)
     }
+    context.JSON(http.StatusOK, response)
+}
+
+// GetAllStockCode godoc
+// @Summary Query All Stock Code
+// @Description Return All Stock Code
+// @ID getAllStockCode
+// @Produce json
+// @Success 200 {object} model.GetAllStockCodeResponse
+// @Router /api/stock/getAllStockCode [get]
+func GetAllStockCode(context *gin.Context) {
+    var stockList []string
+    fileInfoList, _ := ioutil.ReadDir(conf.StockStorageBaseDir)
+    for _, fileItem := range(fileInfoList) {
+        if fileItem.IsDir() {
+            stockList = append(stockList, fileItem.Name())
+        }
+    }
+    response := model.GetAllStockCodeResponse{StockList: stockList}
     context.JSON(http.StatusOK, response)
 }

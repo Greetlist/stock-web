@@ -29,6 +29,24 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/stock/getAllStockCode": {
+            "get": {
+                "description": "Return All Stock Code",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Query All Stock Code",
+                "operationId": "getAllStockCode",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetAllStockCodeResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/stock/getDailyStockData": {
             "get": {
                 "description": "Return Strategy Daily Computed Data",
@@ -58,6 +76,17 @@ var doc = `{
                 ],
                 "summary": "Query Sepcific Stock Computed Data",
                 "operationId": "getQueryStockData",
+                "parameters": [
+                    {
+                        "description": "Query Stock List",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetQueryStockDataRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -70,6 +99,33 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.GetAllStockCodeResponse": {
+            "type": "object",
+            "properties": {
+                "stock_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "['000001'",
+                        " '002142'",
+                        " ...]"
+                    ]
+                }
+            }
+        },
+        "model.GetQueryStockDataRequest": {
+            "type": "object",
+            "properties": {
+                "stock_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model.GetQueryStockDataResponse": {
             "type": "object",
             "properties": {
@@ -94,6 +150,15 @@ var doc = `{
                     "type": "number"
                 },
                 "low": {
+                    "type": "number"
+                },
+                "ma13": {
+                    "type": "number"
+                },
+                "ma34": {
+                    "type": "number"
+                },
+                "ma55": {
                     "type": "number"
                 },
                 "money": {
