@@ -14,10 +14,6 @@ import {
   DataZoomComponent
 } from 'echarts/components'
 import VChart from 'vue-echarts'
-const axios = require('axios').default
-const header = {
-  'Access-Control-Allow-Origin': '*'
-}
 
 use([
   CanvasRenderer,
@@ -69,7 +65,7 @@ export default {
           {
             type: 'inside',
             xAxisIndex: [0, 1],
-            start: 98,
+            start: 80,
             end: 100
           }
         ]
@@ -84,89 +80,81 @@ export default {
       ma55List: []
     }
   },
-  created: function () {
+  props: {
+    singleStockDataItem: Object
+  },
+  mounted: function () {
+    this.setGraphOption()
+  },
+  watch: {
+    singleStockDataItem: function () {
+      this.setGraphOption()
+    }
   },
   methods: {
-    getQueryStockData: function (stockCode) {
-      var param = {
-        stock_list: [stockCode]
-      }
+    setGraphOption: function () {
       var vm = this
-      axios.post('http://121.5.100.186:8081/api/stock/getQueryStockData', param, { header })
-        .then(function (response) {
-          vm.dataList = []
-          vm.dateList = []
-          vm.volumeList = []
-          vm.moneyList = []
-          var stockDatas = response.data.stock_datas
-          for (var i = 0; i < stockDatas.length; i++) {
-            var singleStockData = stockDatas[i]
-            vm.stockCode = singleStockData.stock_code
-            for (var j = 0; j < singleStockData.records.length; j++) {
-              var record = singleStockData.records[j]
-              vm.dataList.push([record.open, record.close, record.low, record.high])
-              vm.dateList.push(record.date)
-              vm.volumeList.push(record.volume)
-              vm.moneyList.push(record.money)
-              vm.ma13List.push(record.ma13)
-              vm.ma34List.push(record.ma34)
-              vm.ma55List.push(record.ma55)
+      vm.stockCode = vm.singleStockDataItem.stock_code
+      for (var i = 0; i < vm.singleStockDataItem.records.length; i++) {
+        var record = vm.singleStockDataItem.records[i]
+        vm.dataList.push([record.open, record.close, record.low, record.high])
+        vm.dateList.push(record.date)
+        vm.volumeList.push(record.volume)
+        vm.moneyList.push(record.money)
+        vm.ma13List.push(record.ma13)
+        vm.ma34List.push(record.ma34)
+        vm.ma55List.push(record.ma55)
+      }
+      vm.$refs.stockGraph.setOption({
+        xAxis: {
+          data: vm.dateList
+        },
+        series: [
+          {
+            type: 'candlestick',
+            data: vm.dataList,
+            itemStyle: {
+              color: '#DC143C',
+              color0: '#32CD32',
+              borderColor: '#FF0000',
+              borderColor0: '#00FF00'
+            }
+          },
+          {
+            name: 'ma13',
+            type: 'line',
+            data: vm.ma13List,
+            smooth: true,
+            lineStyle: {
+              color: '#000080',
+              opacity: 0.7
+            }
+          },
+          {
+            name: 'ma34',
+            type: 'line',
+            data: vm.ma34List,
+            smooth: true,
+            lineStyle: {
+              color: '#00EE00',
+              opacity: 0.7
+            }
+          },
+          {
+            name: 'ma55',
+            type: 'line',
+            data: vm.ma55List,
+            smooth: true,
+            lineStyle: {
+              color: '#CD0000',
+              opacity: 0.7
             }
           }
-          vm.$refs.stockGraph.setOption({
-            xAxis: {
-              data: vm.dateList
-            },
-            series: [
-              {
-                type: 'candlestick',
-                data: vm.dataList,
-                itemStyle: {
-                  color: '#DC143C',
-                  color0: '#32CD32',
-                  borderColor: '#FF0000',
-                  borderColor0: '#00FF00'
-                }
-              },
-              {
-                name: 'ma13',
-                type: 'line',
-                data: vm.ma13List,
-                smooth: true,
-                lineStyle: {
-                  color: '#000080',
-                  opacity: 0.7
-                }
-              },
-              {
-                name: 'ma34',
-                type: 'line',
-                data: vm.ma34List,
-                smooth: true,
-                lineStyle: {
-                  color: '#00EE00',
-                  opacity: 0.7
-                }
-              },
-              {
-                name: 'ma55',
-                type: 'line',
-                data: vm.ma55List,
-                smooth: true,
-                lineStyle: {
-                  color: '#CD0000',
-                  opacity: 0.7
-                }
-              }
-            ],
-            title: {
-              text: vm.stockCode
-            }
-          })
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+        ],
+        title: {
+          text: vm.stockCode
+        }
+      })
     }
   }
 }

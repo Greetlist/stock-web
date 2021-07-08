@@ -18,7 +18,8 @@ import {
   Main,
   Row,
   Col,
-  Autocomplete
+  Autocomplete,
+  Scrollbar
 } from 'element-ui'
 
 Vue.use(Dialog)
@@ -37,6 +38,7 @@ Vue.use(Main)
 Vue.use(Row)
 Vue.use(Col)
 Vue.use(Autocomplete)
+Vue.use(Scrollbar)
 
 Vue.config.productionTip = false
 

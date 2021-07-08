@@ -11,6 +11,13 @@ definitions:
           type: string
         type: array
     type: object
+  model.GetDailyCalcStockDataResponse:
+    properties:
+      stock_datas:
+        items:
+          $ref: '#/definitions/model.StockDataItem'
+        type: array
+    type: object
   model.GetQueryStockDataRequest:
     properties:
       stock_list:
@@ -80,18 +87,18 @@ paths:
           schema:
             $ref: '#/definitions/model.GetAllStockCodeResponse'
       summary: Query All Stock Code
-  /api/stock/getDailyStockData:
+  /api/stock/getDailyCalcStockData:
     get:
-      consumes:
-      - application/json
-      description: Return Strategy Daily Computed Data
-      operationId: queryDailyStockData
+      description: Return All Daily Calc Stock Data
+      operationId: getDailyCalcStockData
       produces:
       - application/json
       responses:
         "200":
-          description: ""
-      summary: Query Daily Stock Computed Data
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetDailyCalcStockDataResponse'
+      summary: Query Daily Calc Stock Data
   /api/stock/getQueryStockData:
     post:
       consumes:

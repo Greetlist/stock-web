@@ -47,20 +47,20 @@ var doc = `{
                 }
             }
         },
-        "/api/stock/getDailyStockData": {
+        "/api/stock/getDailyCalcStockData": {
             "get": {
-                "description": "Return Strategy Daily Computed Data",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Return All Daily Calc Stock Data",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Query Daily Stock Computed Data",
-                "operationId": "queryDailyStockData",
+                "summary": "Query Daily Calc Stock Data",
+                "operationId": "getDailyCalcStockData",
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetDailyCalcStockDataResponse"
+                        }
                     }
                 }
             }
@@ -112,6 +112,17 @@ var doc = `{
                         " '002142'",
                         " ...]"
                     ]
+                }
+            }
+        },
+        "model.GetDailyCalcStockDataResponse": {
+            "type": "object",
+            "properties": {
+                "stock_datas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockDataItem"
+                    }
                 }
             }
         },

@@ -1,85 +1,74 @@
 package util
 
-import (
-    "os"
-    "bufio"
-    "glog"
-    "io"
-    "strings"
-    "errors"
-    "strconv"
-
-    "greetlist/stock-web/server/model"
-)
+//import (
+    //"os"
+    //"bufio"
+    //"glog"
+    //"io"
+    //"strings"
+    //"errors"
+//)
 
 //type DataRow []string
 
-type CsvReader struct {
-    Head []string
-    Data []model.SingleRecord
-}
+//type CsvReader struct {
+//    Head []string
+//}
+//
+//func (reader *CsvReader) ReadCsv(fileName string) error {
+//    reader.indexMap = make(map[string]int)
+//    file, err := os.Open(fileName)
+//    if err != nil {
+//        glog.Errorf("Open %s Error : %s.", fileName, err)
+//        return err
+//    }
+//    defer file.Close()
+//    fileReader := bufio.NewReader(file)
+//    var readHead bool = false
+//    for {
+//        var lineByte []byte
+//        var isPrefix bool
+//        var err error
+//        lineByte, isPrefix, err = fileReader.ReadLine()
+//        lineString := string(lineByte)
+//        if err == nil {
+//            if readHead == false {
+//                reader.Head = strings.Split(lineString, ",")
+//                if !checkHead(reader.Head) {
+//                    return errors.New("Head Has Empty Columns")
+//                }
+//                readHead = true
+//            } else {
+//                rawData := strings.Split(lineString, ",")
+//            }
+//        }
+//        if err != nil || isPrefix {
+//            if err == io.EOF {
+//                break
+//            }
+//            glog.Errorf("Read Csv File Line Error : %s.", err)
+//            return err
+//        }
+//    }
+//    return nil
+//}
+//
+//func checkHead(head []string) bool {
+//    for _, v := range(head) {
+//        if v == "" {
+//            return false
+//        }
+//    }
+//    return true
+//}
+//
+//func (reader *CsvReader) ReadCsv(fileName string, i interface{}) {
+//    f, err := os.OpenFile(fileName, os.O_RDWR, os.ModePerm)
+//    if err != nil {
+//        panic(err)
+//    }
+//    defer f.Close()
+//}
 
-func (reader *CsvReader) ReadCsv(fileName string) error {
-    file, err := os.Open(fileName)
-    if err != nil {
-        glog.Errorf("Open %s Error : %s.", fileName, err)
-        return err
-    }
-    defer file.Close()
-    fileReader := bufio.NewReader(file)
-    var readHead bool = false
-    for {
-        var lineByte []byte
-        var isPrefix bool
-        var err error
-        lineByte, isPrefix, err = fileReader.ReadLine()
-        lineString := string(lineByte)
-        if err == nil {
-            if readHead == false {
-                reader.Head = strings.Split(lineString, ",")
-                if !checkHead(reader.Head) {
-                    return errors.New("Head Has Empty Columns")
-                }
-                readHead = true
-            } else {
-                rawData := strings.Split(lineString, ",")
-                singleRecord := convertRawData(rawData)
-                reader.Data = append(reader.Data, singleRecord)
-            }
-        }
-        if err != nil || isPrefix {
-            if err == io.EOF {
-                break
-            }
-            glog.Errorf("Read Csv File Line Error : %s.", err)
-            return err
-        }
-    }
-    return nil
-}
-
-func checkHead(head []string) bool {
-    for _, v := range(head) {
-        if v == "" {
-            return false
-        }
-    }
-    return true
-}
-
-func convertRawData(rawData []string) model.SingleRecord {
-    record := model.SingleRecord{}
-    record.Date = rawData[0]
-    record.Open, _ = strconv.ParseFloat(rawData[1], 64)
-    record.Close, _ = strconv.ParseFloat(rawData[2], 64)
-    record.High, _ = strconv.ParseFloat(rawData[3], 64)
-    record.Low, _ = strconv.ParseFloat(rawData[4], 64)
-    record.Volume, _ = strconv.ParseFloat(rawData[5], 64)
-    record.Money, _ = strconv.ParseFloat(rawData[6], 64)
-    record.Ma13, _ = strconv.ParseFloat(rawData[7], 64)
-    record.Ma34, _ = strconv.ParseFloat(rawData[11], 64)
-    record.Ma55, _ = strconv.ParseFloat(rawData[15], 64)
-    return record
-}
 
 

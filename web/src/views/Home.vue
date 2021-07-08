@@ -7,7 +7,9 @@
         </AsideMenu>
       </el-aside>
       <el-main>
-        <router-view></router-view>
+        <el-scrollbar class='page-component__scroll'>
+          <router-view></router-view>
+        </el-scrollbar>
       </el-main>
     </el-container>
   </el-container>
