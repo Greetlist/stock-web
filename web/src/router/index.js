@@ -1,13 +1,12 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
-Vue.use(VueRouter)
+const routerHistory = createWebHistory()
 
 const routes = [
   {
-    path: '/dailyOverView',
-    name: 'DailyOverView',
-    component: () => import('@/views/DailyOverView.vue')
+    path: '/dailyRecommand',
+    name: 'DailyRecommand',
+    component: () => import('@/views/DailyRecommandView.vue')
   },
   {
     path: '/queryStockView',
@@ -16,9 +15,9 @@ const routes = [
   }
 ]
 
-const router = new VueRouter({
-  mode: 'history',
+const router = createRouter({
   base: process.env.BASE_URL,
+  history: routerHistory,
   routes
 })
 

@@ -1,34 +1,20 @@
 <template>
   <div>
-    <BNavbar toggleable="lg" type="dark" variant="dark" fixed="top">
-      <BNavbarBrand href="/">
+    <b-navbar toggleable="lg" type="dark" variant="dark" fixed="top">
+      <b-navbar-brand href="/">
         <img src="https://wow.zamimg.com/images/wow/icons/medium/inv_helmet_74.jpg" alt="Light">
-      </BNavbarBrand>
-      <BNavbarNav class="ml-auto">
-        <BButton variant="dark" @click="showLoginDialog">Login</BButton>
-        <BButton variant="dark">Contact Us</BButton>
-      </BNavbarNav>
-      <LoginFormDialog ref="LoginFormDialog"></LoginFormDialog>
-    </BNavbar>
+      </b-navbar-brand>
+      <b-navbar-nav class="ml-auto">
+        <b-button variant="dark" @click="showLoginDialog">Login</b-button>
+        <b-button variant="dark">Contact Us</b-button>
+      </b-navbar-nav>
+      <b-form-input v-model="text" placeholder="Enter your name"></b-form-input>
+    </b-navbar>
   </div>
 </template>
 
 <script>
-import { BNavbar, BNavbarBrand, BNavbarNav, BButton } from 'bootstrap-vue'
-import LoginFormDialog from '@/components/LoginFormDialog.vue'
 export default {
-  name: 'HeadNavBar',
-  components: {
-    BNavbar,
-    BNavbarBrand,
-    BNavbarNav,
-    BButton,
-    LoginFormDialog
-  },
-  methods: {
-    showLoginDialog: function () {
-      this.$refs.LoginFormDialog.dialogVisible = true
-    }
-  }
+  name: 'HeadNavBar'
 }
 </script>

@@ -96,22 +96,49 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/api/stock/getRecommandStockPrediction": {
+            "post": {
+                "description": "Return Recommand Stock Prediction Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Query Recommand Stock Prediction Data",
+                "operationId": "getRecommandStockPrediction",
+                "parameters": [
+                    {
+                        "description": "Query Date",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetRecommandStockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetRecommandStockResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "model.GetAllStockCodeResponse": {
             "type": "object",
             "properties": {
-                "stock_list": {
+                "stock_info_list": {
                     "type": "array",
                     "items": {
-                        "type": "string"
-                    },
-                    "example": [
-                        "['000001'",
-                        " '002142'",
-                        " ...]"
-                    ]
+                        "$ref": "#/definitions/model.StockBasicInfo"
+                    }
                 }
             }
         },
@@ -129,6 +156,9 @@ var doc = `{
         "model.GetQueryStockDataRequest": {
             "type": "object",
             "properties": {
+                "query_data_len": {
+                    "type": "integer"
+                },
                 "stock_list": {
                     "type": "array",
                     "items": {
@@ -145,6 +175,55 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/model.StockDataItem"
                     }
+                }
+            }
+        },
+        "model.GetRecommandStockRequest": {
+            "type": "object",
+            "properties": {
+                "query_data_len": {
+                    "type": "integer"
+                },
+                "query_date": {
+                    "type": "string",
+                    "example": "2021-07-01"
+                }
+            }
+        },
+        "model.GetRecommandStockResponse": {
+            "type": "object",
+            "properties": {
+                "stock_datas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockDataItem"
+                    }
+                },
+                "stock_prediction_datas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockPredictItem"
+                    }
+                }
+            }
+        },
+        "model.SinglePredictRecord": {
+            "type": "object",
+            "properties": {
+                "close": {
+                    "type": "number"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "high": {
+                    "type": "number"
+                },
+                "low": {
+                    "type": "number"
+                },
+                "open": {
+                    "type": "number"
                 }
             }
         },
@@ -183,6 +262,19 @@ var doc = `{
                 }
             }
         },
+        "model.StockBasicInfo": {
+            "type": "object",
+            "properties": {
+                "stock_code": {
+                    "type": "string",
+                    "example": "002142.SZ"
+                },
+                "stock_name": {
+                    "type": "string",
+                    "example": "宁波银行"
+                }
+            }
+        },
         "model.StockDataItem": {
             "type": "object",
             "properties": {
@@ -194,7 +286,22 @@ var doc = `{
                 },
                 "stock_code": {
                     "type": "string",
-                    "example": "002142"
+                    "example": "002142.SZ"
+                }
+            }
+        },
+        "model.StockPredictItem": {
+            "type": "object",
+            "properties": {
+                "prediction_records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.SinglePredictRecord"
+                    }
+                },
+                "stock_code": {
+                    "type": "string",
+                    "example": "002142.SZ"
                 }
             }
         }

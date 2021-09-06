@@ -33,8 +33,8 @@ func GetQueryStockData(context *gin.Context) {
     for _, stockCode := range(request.StockList) {
         var stockDataItem model.StockDataItem
         stockDataItem.StockCode = stockCode
-        stockFilePath := path.Join(conf.StockResultBaseDir, stockCode, "result_ma.csv")
-        stockDataItem.Records = extractSingleStockDataFromCsv(stockFilePath)
+        stockFilePath := path.Join(conf.StockMaBaseDir, "day", selectExchange(stockCode), stockCode + ".ma.csv")
+        stockDataItem.Records = extractSingleStockDataFromCsv(stockFilePath, request.QueryDataLen)
         response.StockDatas = append(response.StockDatas, stockDataItem)
     }
     context.JSON(http.StatusOK, response)
@@ -48,14 +48,19 @@ func GetQueryStockData(context *gin.Context) {
 // @Success 200 {object} model.GetAllStockCodeResponse
 // @Router /api/stock/getAllStockCode [get]
 func GetAllStockCode(context *gin.Context) {
-    var stockList []string
-    fileInfoList, _ := ioutil.ReadDir(conf.StockStorageBaseDir)
-    for _, fileItem := range(fileInfoList) {
-        if fileItem.IsDir() {
-            stockList = append(stockList, fileItem.Name())
+    var stockInfoList []model.StockBasicInfo
+    fileList := []string{"total_stock.csv", "total_index.csv"}
+    for _, fileName := range(fileList) {
+        var curStockList []*model.StockBasicInfo
+        f, _ := os.OpenFile(path.Join(conf.StockRawBaseDir, fileName), os.O_RDWR, os.ModePerm)
+        if err := gocsv.UnmarshalFile(f, &curStockList); err != nil {
+            fmt.Printf("Unmarshal csv file error : %s.\n", err)
+        }
+        for _, stockItemPtr := range(curStockList) {
+            stockInfoList = append(stockInfoList, *stockItemPtr)
         }
     }
-    response := model.GetAllStockCodeResponse{StockList: stockList}
+    response := model.GetAllStockCodeResponse{StockInfoList: stockInfoList}
     context.JSON(http.StatusOK, response)
 }
 
@@ -95,7 +100,7 @@ func GetDailyCalcStockData(context *gin.Context) {
         var curItem model.StockDataItem
         curItem.StockCode = stockCode
         stockCsvFilePath := path.Join(conf.StockResultBaseDir, stockCode, "/result_ma.csv")
-        curItem.Records = extractSingleStockDataFromCsv(stockCsvFilePath)
+        curItem.Records = extractSingleStockDataFromCsv(stockCsvFilePath, 0)
         stockDatas = append(stockDatas, curItem)
     }
 
@@ -103,20 +108,28 @@ func GetDailyCalcStockData(context *gin.Context) {
     context.JSON(http.StatusOK, response)
 }
 
-func extractSingleStockDataFromCsv(stockFilePath string) []model.SingleRecord {
+func extractSingleStockDataFromCsv(stockFilePath string, queryDataLen int) []model.SingleRecord {
+    dataLenGap := 30
+    if queryDataLen != 0 {
+        dataLenGap = queryDataLen
+    }
     var res []model.SingleRecord
     f, err := os.OpenFile(stockFilePath, os.O_RDWR, os.ModePerm)
+    defer f.Close()
     if err != nil {
         fmt.Printf("Open File %s Error : %s.\n", stockFilePath, err)
+        return res
     }
-    defer f.Close()
 
     var curStockRecords []*model.SingleRecord
     if err := gocsv.UnmarshalFile(f, &curStockRecords); err != nil {
         fmt.Printf("Unmarshal csv file error : %s.\n", err)
     }
     dataLen := len(curStockRecords)
-    startIndex := dataLen - dataLen / 7
+    startIndex := 0
+    if dataLen > dataLenGap {
+        startIndex = dataLen - dataLenGap
+    }
     curStockRecords = curStockRecords[startIndex:]
     for _, value := range(curStockRecords) {
         res = append(res, *value)
@@ -124,3 +137,65 @@ func extractSingleStockDataFromCsv(stockFilePath string) []model.SingleRecord {
     return res
 }
 
+func extractPredictionDataFromCsv(stockFilePath string) []model.SinglePredictRecord {
+    var res []model.SinglePredictRecord
+    f, err := os.OpenFile(stockFilePath, os.O_RDWR, os.ModePerm)
+    defer f.Close()
+    if err != nil {
+        fmt.Printf("Open File %s Error : %s.\n", stockFilePath, err)
+        return res
+    }
+    var curPredictionRecords []*model.SinglePredictRecord
+    if err := gocsv.UnmarshalFile(f, &curPredictionRecords); err != nil {
+        fmt.Printf("Unmarshal csv file error : %s.\n", err)
+    }
+    for _, value := range(curPredictionRecords) {
+        res = append(res, *value)
+    }
+    return res
+}
+
+// GetRecommandStockPrediction godoc
+// @Summary Query Recommand Stock Prediction Data
+// @Description Return Recommand Stock Prediction Data
+// @ID getRecommandStockPrediction
+// @Accept json
+// @Produce json
+// @Param request_json body model.GetRecommandStockRequest true "Query Date"
+// @Success 200 {object} model.GetRecommandStockResponse
+// @Router /api/stock/getRecommandStockPrediction [post]
+func GetRecommandStockPrediction(context *gin.Context) {
+    request := model.GetRecommandStockRequest{}
+    if err := context.BindJSON(&request); err != nil {
+	    context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+    var response model.GetRecommandStockResponse
+
+    predictionDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"))
+    fileInfoList, _ := ioutil.ReadDir(predictionDir)
+    for _, fileItem := range(fileInfoList) {
+        if !strings.HasSuffix(fileItem.Name(), "compared.csv") {
+            var curItem model.StockDataItem
+            curItem.StockCode = strings.ReplaceAll(fileItem.Name(), ".csv", "")
+            maCsvFileName := strings.ReplaceAll(fileItem.Name(), ".csv", ".ma.csv")
+            maCsvFilePath := path.Join(conf.StockMaBaseDir, "day", selectExchange(fileItem.Name()), maCsvFileName)
+            curItem.Records = extractSingleStockDataFromCsv(maCsvFilePath, request.QueryDataLen)
+            var curPredictItem model.StockPredictItem
+            curPredictItem.StockCode = curItem.StockCode
+            curPredictItem.PredictionRecords = extractPredictionDataFromCsv(path.Join(predictionDir, fileItem.Name()))
+            response.StockRawDatas = append(response.StockRawDatas, curItem)
+            response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
+        }
+    }
+    context.JSON(http.StatusOK, response)
+}
+
+func selectExchange(stockCode string) string {
+    if strings.Contains(stockCode, "SH") {
+        return "SSE"
+    } else if strings.Contains(stockCode, "SZ") {
+        return "SZSE"
+    }
+    return ""
+}

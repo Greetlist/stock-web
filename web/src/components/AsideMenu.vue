@@ -1,42 +1,28 @@
 <template>
   <div>
-    <el-scrollbar class='page-component__scroll'>
-      <!--
-      <transition :duration="{ enter: 800, leave: 100}" mode="out-in">
-        <el-menu
-          :collapse="false"
-          :collapse-transition="true"
-          :default-active="active"
-          :default-openeds="['0', '1', '2', '3', '4', '5']"
-          class="el-menu-vertical"
-          unique-opened
-          router
-          background-color="#545c64"
-          active-text-color="#ffd04b"
-          text-color="#fff">
-          <el-submenu v-for="(singleMenu, idx) in menuList" :index="idx.toString()" :key="singleMenu.id">
-            <template slot="title">
-              <i :class="singleMenu.headIcon"></i>
-              {{ singleMenu.name }}
-            </template>
-            <el-menu-item-group>
-              <el-menu-item v-for="item in singleMenu.subMenuList" :index="item.route" :key="item.id">
-              {{ item.name }}
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-        </el-menu>
-      </transition>
-      -->
-      <li class="nav-item" v-for="singleMenu in menuList" :key="singleMenu.id">
-        {{ singleMenu.name }}
-        <ul class="pure-menu-list sub-nav">
-          <li v-for="item in singleMenu.subMenuList" :key="item.id" class="nav-item">
-            <a href="item.route">{{ item.name }}</a>
-          </li>
-        </ul>
-      </li>
-    </el-scrollbar>
+    <el-menu
+      :collapse="collapse"
+      :collapse-transition="true"
+      :default-active="active"
+      class="el-menu-vertical"
+      :uniqueOpened="true"
+      router
+      background-color="#545c64"
+      active-text-color="#ffd04b"
+      text-color="#fff">
+      <el-sub-menu v-for="(singleMenu, idx) in menuList" :index="idx.toString()" :key="singleMenu.id">
+        <template #title>
+          <i :class="singleMenu.headIcon"></i>
+          <span>{{ singleMenu.name }}</span>
+        </template>
+        <el-menu-item-group>
+          <template #title> {{ singleMenu.name }}</template>
+          <el-menu-item v-for="item in singleMenu.subMenuList" :index="item.route" :key="item.id">
+          {{ item.name }}
+          </el-menu-item>
+        </el-menu-item-group>
+      </el-sub-menu>
+    </el-menu>
   </div>
 </template>
 
@@ -50,7 +36,7 @@ var menuList = [
       {
         name: 'Daily OverView',
         id: 'daily-overview',
-        route: '/dailyOverView'
+        route: '/dailyRecommand'
       },
       {
         name: 'Query Stock',
@@ -173,6 +159,13 @@ export default {
   data: function () {
     return {
       menuList: menuList
+    }
+  },
+  computed: {
+    collapse: {
+      get() {
+        return this.$store.state.collapse
+      }
     }
   }
 }

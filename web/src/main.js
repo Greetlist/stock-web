@@ -1,50 +1,57 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
+import store from './store'
 import router from './router'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'element-plus/dist/index.css'
 import {
-  Dialog,
-  Button,
-  MessageBox,
-  Container,
-  Aside,
-  Menu,
-  Submenu,
-  MenuItem,
-  MenuItemGroup,
-  Header,
-  Main,
-  Row,
-  Col,
-  Autocomplete,
-  Scrollbar
-} from 'element-ui'
+  ElButton,
+  ElMessageBox,
+  ElContainer,
+  ElAside,
+  ElMenu,
+  ElSubMenu,
+  ElMenuItem,
+  ElMenuItemGroup,
+  ElHeader,
+  ElMain,
+  ElRow,
+  ElCol,
+  ElAutocomplete,
+  ElDatePicker,
+  ElPagination,
+  ElInputNumber
+} from 'element-plus'
 
-Vue.use(Dialog)
-Vue.use(Button)
-Vue.use(MessageBox)
-Vue.use(Container)
-Vue.use(Aside)
-Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
-Vue.use(Menu)
-Vue.use(Submenu)
-Vue.use(MenuItem)
-Vue.use(MenuItemGroup)
-Vue.use(Header)
-Vue.use(Main)
-Vue.use(Row)
-Vue.use(Col)
-Vue.use(Autocomplete)
-Vue.use(Scrollbar)
+// Icons
+import {
+  Fold,
+  Expand,
+  BrushFilled
+} from '@element-plus/icons'
 
-Vue.config.productionTip = false
+const app = createApp(App)
 
-Vue.prototype.$confirm = MessageBox.confirm
+app.use(ElButton)
+app.use(ElMessageBox)
+app.use(ElContainer)
+app.use(ElAside)
+app.use(ElMenu)
+app.use(ElSubMenu)
+app.use(ElMenuItem)
+app.use(ElMenuItemGroup)
+app.use(ElHeader)
+app.use(ElMain)
+app.use(ElRow)
+app.use(ElCol)
+app.use(ElAutocomplete)
+app.use(Fold)
+app.use(Expand)
+app.use(BrushFilled)
+app.use(ElDatePicker)
+app.use(ElPagination)
+app.use(ElInputNumber)
 
-new Vue({
-  router,
-  render: h => h(App)
-}).$mount('#app')
+// for global var
+app.config.globalProperties.$server = 'http://121.5.100.186:8082'
+
+app.use(store).use(router).mount('#app')

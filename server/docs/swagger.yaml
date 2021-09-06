@@ -2,13 +2,9 @@ basePath: /
 definitions:
   model.GetAllStockCodeResponse:
     properties:
-      stock_list:
-        example:
-        - '[''000001'''
-        - ' ''002142'''
-        - ' ...]'
+      stock_info_list:
         items:
-          type: string
+          $ref: '#/definitions/model.StockBasicInfo'
         type: array
     type: object
   model.GetDailyCalcStockDataResponse:
@@ -20,6 +16,8 @@ definitions:
     type: object
   model.GetQueryStockDataRequest:
     properties:
+      query_data_len:
+        type: integer
       stock_list:
         items:
           type: string
@@ -31,6 +29,38 @@ definitions:
         items:
           $ref: '#/definitions/model.StockDataItem'
         type: array
+    type: object
+  model.GetRecommandStockRequest:
+    properties:
+      query_data_len:
+        type: integer
+      query_date:
+        example: "2021-07-01"
+        type: string
+    type: object
+  model.GetRecommandStockResponse:
+    properties:
+      stock_datas:
+        items:
+          $ref: '#/definitions/model.StockDataItem'
+        type: array
+      stock_prediction_datas:
+        items:
+          $ref: '#/definitions/model.StockPredictItem'
+        type: array
+    type: object
+  model.SinglePredictRecord:
+    properties:
+      close:
+        type: number
+      date:
+        type: string
+      high:
+        type: number
+      low:
+        type: number
+      open:
+        type: number
     type: object
   model.SingleRecord:
     properties:
@@ -55,6 +85,15 @@ definitions:
       volume:
         type: number
     type: object
+  model.StockBasicInfo:
+    properties:
+      stock_code:
+        example: 002142.SZ
+        type: string
+      stock_name:
+        example: 宁波银行
+        type: string
+    type: object
   model.StockDataItem:
     properties:
       records:
@@ -62,7 +101,17 @@ definitions:
           $ref: '#/definitions/model.SingleRecord'
         type: array
       stock_code:
-        example: "002142"
+        example: 002142.SZ
+        type: string
+    type: object
+  model.StockPredictItem:
+    properties:
+      prediction_records:
+        items:
+          $ref: '#/definitions/model.SinglePredictRecord'
+        type: array
+      stock_code:
+        example: 002142.SZ
         type: string
     type: object
 info:
@@ -120,4 +169,25 @@ paths:
           schema:
             $ref: '#/definitions/model.GetQueryStockDataResponse'
       summary: Query Sepcific Stock Computed Data
+  /api/stock/getRecommandStockPrediction:
+    post:
+      consumes:
+      - application/json
+      description: Return Recommand Stock Prediction Data
+      operationId: getRecommandStockPrediction
+      parameters:
+      - description: Query Date
+        in: body
+        name: request_json
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetRecommandStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetRecommandStockResponse'
+      summary: Query Recommand Stock Prediction Data
 swagger: "2.0"

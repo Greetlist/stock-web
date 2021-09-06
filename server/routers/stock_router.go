@@ -10,4 +10,5 @@ func InitStockApiRouter(RouterGroup *gin.RouterGroup) {
     StockRouterGroup.GET("/getDailyCalcStockData", api.GetDailyCalcStockData)
     StockRouterGroup.POST("/getQueryStockData", api.GetQueryStockData)
     StockRouterGroup.GET("/getAllStockCode", api.GetAllStockCode)
+    StockRouterGroup.POST("/getRecommandStockPrediction", api.GetRecommandStockPrediction)
 }

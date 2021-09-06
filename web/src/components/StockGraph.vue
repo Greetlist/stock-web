@@ -35,7 +35,12 @@ export default {
       option: {
         title: {
           text: 'Code',
-          left: 'right'
+          left: 'right',
+          top: 'bottom',
+          textStyle: {
+            width: '1vh',
+            height: '1vh' 
+          }
         },
         tooltip: {
           trigger: 'axis',
@@ -65,7 +70,7 @@ export default {
           {
             type: 'inside',
             xAxisIndex: [0, 1],
-            start: 80,
+            start: 0,
             end: 100
           }
         ]
@@ -84,35 +89,45 @@ export default {
     singleStockDataItem: Object
   },
   mounted: function () {
+    this.clearAllData()
     this.setGraphOption()
   },
   watch: {
     singleStockDataItem: function () {
+      this.clearAllData()
       this.setGraphOption()
     }
   },
   methods: {
-    setGraphOption: function () {
-      var vm = this
-      vm.stockCode = vm.singleStockDataItem.stock_code
-      for (var i = 0; i < vm.singleStockDataItem.records.length; i++) {
-        var record = vm.singleStockDataItem.records[i]
-        vm.dataList.push([record.open, record.close, record.low, record.high])
-        vm.dateList.push(record.date)
-        vm.volumeList.push(record.volume)
-        vm.moneyList.push(record.money)
-        vm.ma13List.push(record.ma13)
-        vm.ma34List.push(record.ma34)
-        vm.ma55List.push(record.ma55)
+    clearAllData () {
+      this.dateList = [],
+      this.dataList = [],
+      this.volumeList = [],
+      this.moneyList = [],
+      this.ma13List = [],
+      this.ma34List = [],
+      this.ma55List = []
+    },
+    setGraphOption () {
+      this.stockCode = this.singleStockDataItem.stock_code
+      for (var i = 0; i < this.singleStockDataItem.records.length; i++) {
+        var record = this.singleStockDataItem.records[i]
+        this.dataList.push([record.open, record.close, record.low, record.high])
+        this.dateList.push(record.date)
+        this.volumeList.push(record.volume)
+        this.moneyList.push(record.money)
+        this.ma13List.push(record.ma13)
+        this.ma34List.push(record.ma34)
+        this.ma55List.push(record.ma55)
       }
-      vm.$refs.stockGraph.setOption({
+      this.$refs.stockGraph.setOption({
         xAxis: {
-          data: vm.dateList
+          data: this.dateList
         },
         series: [
           {
             type: 'candlestick',
-            data: vm.dataList,
+            data: this.dataList,
             itemStyle: {
               color: '#DC143C',
               color0: '#32CD32',
@@ -123,7 +138,7 @@ export default {
           {
             name: 'ma13',
             type: 'line',
-            data: vm.ma13List,
+            data: this.ma13List,
             smooth: true,
             lineStyle: {
               color: '#000080',
@@ -133,7 +148,7 @@ export default {
           {
             name: 'ma34',
             type: 'line',
-            data: vm.ma34List,
+            data: this.ma34List,
             smooth: true,
             lineStyle: {
               color: '#00EE00',
@@ -143,7 +158,7 @@ export default {
           {
             name: 'ma55',
             type: 'line',
-            data: vm.ma55List,
+            data: this.ma55List,
             smooth: true,
             lineStyle: {
               color: '#CD0000',
@@ -152,7 +167,7 @@ export default {
           }
         ],
         title: {
-          text: vm.stockCode
+          text: this.stockCode
         }
       })
     }
@@ -162,7 +177,6 @@ export default {
 
 <style scoped>
 .chart {
-  height: 800px;
-  weight: 70%
+  height: 40vh;
 }
 </style>
