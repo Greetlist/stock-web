@@ -1,2 +1,3 @@
 server/bin/
 web/node_modules/
+server/test/

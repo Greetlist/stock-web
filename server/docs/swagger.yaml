@@ -1,33 +1,37 @@
 basePath: /
 definitions:
+  model.FactorRawData:
+    properties:
+      ema13:
+        items:
+          type: number
+        type: array
+      ema34:
+        items:
+          type: number
+        type: array
+      ema55:
+        items:
+          type: number
+        type: array
+      ma13:
+        items:
+          type: number
+        type: array
+      ma34:
+        items:
+          type: number
+        type: array
+      ma55:
+        items:
+          type: number
+        type: array
+    type: object
   model.GetAllStockCodeResponse:
     properties:
       stock_info_list:
         items:
           $ref: '#/definitions/model.StockBasicInfo'
-        type: array
-    type: object
-  model.GetDailyCalcStockDataResponse:
-    properties:
-      stock_datas:
-        items:
-          $ref: '#/definitions/model.StockDataItem'
-        type: array
-    type: object
-  model.GetQueryStockDataRequest:
-    properties:
-      query_data_len:
-        type: integer
-      stock_list:
-        items:
-          type: string
-        type: array
-    type: object
-  model.GetQueryStockDataResponse:
-    properties:
-      stock_datas:
-        items:
-          $ref: '#/definitions/model.StockDataItem'
         type: array
     type: object
   model.GetRecommandStockRequest:
@@ -40,50 +44,93 @@ definitions:
     type: object
   model.GetRecommandStockResponse:
     properties:
-      stock_datas:
+      stock_data:
         items:
-          $ref: '#/definitions/model.StockDataItem'
+          $ref: '#/definitions/model.SingleStockData'
         type: array
       stock_prediction_datas:
         items:
           $ref: '#/definitions/model.StockPredictItem'
         type: array
     type: object
+  model.MarketRawData:
+    properties:
+      close:
+        items:
+          type: number
+        type: array
+      date:
+        items:
+          type: string
+        type: array
+      high:
+        items:
+          type: number
+        type: array
+      low:
+        items:
+          type: number
+        type: array
+      money:
+        items:
+          type: number
+        type: array
+      open:
+        items:
+          type: number
+        type: array
+      volume:
+        items:
+          type: number
+        type: array
+    type: object
+  model.QueryStockDataRequest:
+    properties:
+      query_data_len:
+        type: integer
+      stock_list:
+        items:
+          type: string
+        type: array
+    type: object
+  model.QueryStockDataResponse:
+    properties:
+      stock_datas:
+        items:
+          $ref: '#/definitions/model.SingleStockData'
+        type: array
+    type: object
   model.SinglePredictRecord:
     properties:
       close:
-        type: number
+        items:
+          type: number
+        type: array
       date:
-        type: string
+        items:
+          type: string
+        type: array
       high:
-        type: number
+        items:
+          type: number
+        type: array
       low:
-        type: number
+        items:
+          type: number
+        type: array
       open:
-        type: number
+        items:
+          type: number
+        type: array
     type: object
-  model.SingleRecord:
+  model.SingleStockData:
     properties:
-      close:
-        type: number
-      date:
-        type: string
-      high:
-        type: number
-      low:
-        type: number
-      ma13:
-        type: number
-      ma34:
-        type: number
-      ma55:
-        type: number
-      money:
-        type: number
-      open:
-        type: number
-      volume:
-        type: number
+      stock_info:
+        $ref: '#/definitions/model.StockBasicInfo'
+      stock_raw_datas:
+        items:
+          $ref: '#/definitions/model.StockSinglePeriodData'
+        type: array
     type: object
   model.StockBasicInfo:
     properties:
@@ -94,24 +141,20 @@ definitions:
         example: 宁波银行
         type: string
     type: object
-  model.StockDataItem:
-    properties:
-      records:
-        items:
-          $ref: '#/definitions/model.SingleRecord'
-        type: array
-      stock_code:
-        example: 002142.SZ
-        type: string
-    type: object
   model.StockPredictItem:
     properties:
-      prediction_records:
-        items:
-          $ref: '#/definitions/model.SinglePredictRecord'
-        type: array
-      stock_code:
-        example: 002142.SZ
+      prediction_record:
+        $ref: '#/definitions/model.SinglePredictRecord'
+      stock_info:
+        $ref: '#/definitions/model.StockBasicInfo'
+    type: object
+  model.StockSinglePeriodData:
+    properties:
+      factor_raw_data:
+        $ref: '#/definitions/model.FactorRawData'
+      market_raw_data:
+        $ref: '#/definitions/model.MarketRawData'
+      period_type:
         type: string
     type: object
 info:
@@ -146,29 +189,8 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.GetDailyCalcStockDataResponse'
+            $ref: '#/definitions/model.MarketRawData'
       summary: Query Daily Calc Stock Data
-  /api/stock/getQueryStockData:
-    post:
-      consumes:
-      - application/json
-      description: Return Strategy Sepcific Computed Data
-      operationId: getQueryStockData
-      parameters:
-      - description: Query Stock List
-        in: body
-        name: request_json
-        required: true
-        schema:
-          $ref: '#/definitions/model.GetQueryStockDataRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.GetQueryStockDataResponse'
-      summary: Query Sepcific Stock Computed Data
   /api/stock/getRecommandStockPrediction:
     post:
       consumes:
@@ -190,4 +212,25 @@ paths:
           schema:
             $ref: '#/definitions/model.GetRecommandStockResponse'
       summary: Query Recommand Stock Prediction Data
+  /api/stock/queryStockData:
+    post:
+      consumes:
+      - application/json
+      description: Return Strategy Sepcific Computed Data
+      operationId: queryStockData
+      parameters:
+      - description: Query Stock List
+        in: body
+        name: request_json
+        required: true
+        schema:
+          $ref: '#/definitions/model.QueryStockDataRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.QueryStockDataResponse'
+      summary: Query Sepcific Stock Computed Data
 swagger: "2.0"

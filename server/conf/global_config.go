@@ -6,4 +6,5 @@ var DailyResultBaseDir string = "/data/tmp/daily_ma_result/"
 
 var StockPredictionBaseDir string = "/home/greetlist/workspace/data_storage/predictions"
 var StockMaBaseDir string = "/home/greetlist/workspace/data_storage/ma"
+var StockEmaBaseDir string = "/home/greetlist/workspace/data_storage/ema"
 var StockRawBaseDir string = "/home/greetlist/workspace/data_storage/raw"

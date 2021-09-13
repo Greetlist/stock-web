@@ -59,39 +59,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.GetDailyCalcStockDataResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/stock/getQueryStockData": {
-            "post": {
-                "description": "Return Strategy Sepcific Computed Data",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Query Sepcific Stock Computed Data",
-                "operationId": "getQueryStockData",
-                "parameters": [
-                    {
-                        "description": "Query Stock List",
-                        "name": "request_json",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.GetQueryStockDataRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.GetQueryStockDataResponse"
+                            "$ref": "#/definitions/model.MarketRawData"
                         }
                     }
                 }
@@ -128,9 +96,82 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/api/stock/queryStockData": {
+            "post": {
+                "description": "Return Strategy Sepcific Computed Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Query Sepcific Stock Computed Data",
+                "operationId": "queryStockData",
+                "parameters": [
+                    {
+                        "description": "Query Stock List",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.QueryStockDataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.QueryStockDataResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "model.FactorRawData": {
+            "type": "object",
+            "properties": {
+                "ema13": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ema34": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ema55": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ma13": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ma34": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "ma55": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            }
+        },
         "model.GetAllStockCodeResponse": {
             "type": "object",
             "properties": {
@@ -138,42 +179,6 @@ var doc = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.StockBasicInfo"
-                    }
-                }
-            }
-        },
-        "model.GetDailyCalcStockDataResponse": {
-            "type": "object",
-            "properties": {
-                "stock_datas": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.StockDataItem"
-                    }
-                }
-            }
-        },
-        "model.GetQueryStockDataRequest": {
-            "type": "object",
-            "properties": {
-                "query_data_len": {
-                    "type": "integer"
-                },
-                "stock_list": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model.GetQueryStockDataResponse": {
-            "type": "object",
-            "properties": {
-                "stock_datas": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.StockDataItem"
                     }
                 }
             }
@@ -193,10 +198,10 @@ var doc = `{
         "model.GetRecommandStockResponse": {
             "type": "object",
             "properties": {
-                "stock_datas": {
+                "stock_data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.StockDataItem"
+                        "$ref": "#/definitions/model.SingleStockData"
                     }
                 },
                 "stock_prediction_datas": {
@@ -207,58 +212,124 @@ var doc = `{
                 }
             }
         },
+        "model.MarketRawData": {
+            "type": "object",
+            "properties": {
+                "close": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "date": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "high": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "low": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "money": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "open": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "volume": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            }
+        },
+        "model.QueryStockDataRequest": {
+            "type": "object",
+            "properties": {
+                "query_data_len": {
+                    "type": "integer"
+                },
+                "stock_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.QueryStockDataResponse": {
+            "type": "object",
+            "properties": {
+                "stock_datas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.SingleStockData"
+                    }
+                }
+            }
+        },
         "model.SinglePredictRecord": {
             "type": "object",
             "properties": {
                 "close": {
-                    "type": "number"
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
                 },
                 "date": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "high": {
-                    "type": "number"
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
                 },
                 "low": {
-                    "type": "number"
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
                 },
                 "open": {
-                    "type": "number"
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
                 }
             }
         },
-        "model.SingleRecord": {
+        "model.SingleStockData": {
             "type": "object",
             "properties": {
-                "close": {
-                    "type": "number"
+                "stock_info": {
+                    "$ref": "#/definitions/model.StockBasicInfo"
                 },
-                "date": {
-                    "type": "string"
-                },
-                "high": {
-                    "type": "number"
-                },
-                "low": {
-                    "type": "number"
-                },
-                "ma13": {
-                    "type": "number"
-                },
-                "ma34": {
-                    "type": "number"
-                },
-                "ma55": {
-                    "type": "number"
-                },
-                "money": {
-                    "type": "number"
-                },
-                "open": {
-                    "type": "number"
-                },
-                "volume": {
-                    "type": "number"
+                "stock_raw_datas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockSinglePeriodData"
+                    }
                 }
             }
         },
@@ -275,33 +346,28 @@ var doc = `{
                 }
             }
         },
-        "model.StockDataItem": {
-            "type": "object",
-            "properties": {
-                "records": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.SingleRecord"
-                    }
-                },
-                "stock_code": {
-                    "type": "string",
-                    "example": "002142.SZ"
-                }
-            }
-        },
         "model.StockPredictItem": {
             "type": "object",
             "properties": {
-                "prediction_records": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.SinglePredictRecord"
-                    }
+                "prediction_record": {
+                    "$ref": "#/definitions/model.SinglePredictRecord"
                 },
-                "stock_code": {
-                    "type": "string",
-                    "example": "002142.SZ"
+                "stock_info": {
+                    "$ref": "#/definitions/model.StockBasicInfo"
+                }
+            }
+        },
+        "model.StockSinglePeriodData": {
+            "type": "object",
+            "properties": {
+                "factor_raw_data": {
+                    "$ref": "#/definitions/model.FactorRawData"
+                },
+                "market_raw_data": {
+                    "$ref": "#/definitions/model.MarketRawData"
+                },
+                "period_type": {
+                    "type": "string"
                 }
             }
         }
