@@ -46,18 +46,18 @@ var menuList = [
     ]
   },
   {
-    name: 'Algo Related',
-    id: 'algo',
+    name: 'Stock Position',
+    id: 'position',
     headIcon: 'el-icon-cpu',
     subMenuList: [
       {
-        name: 'Inference',
-        id: 'inference',
+        name: 'Stock Hold',
+        id: '',
         route: '#'
       },
       {
-        name: 'Regression',
-        id: 'regression',
+        name: 'Statistic',
+        id: 'statistic',
         route: '#'
       }
     ]

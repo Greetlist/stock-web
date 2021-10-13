@@ -42,7 +42,7 @@ export default {
         stock_list: [stockCode],
         query_data_len: this.queryDataLen
       }
-      axios.post(this.server+'/api/stock/getQueryStockData', param, { header })
+      axios.post(this.server+'/api/stock/queryStockData', param, { header })
         .then((response) => {
           this.stockDatas = response.data.stock_datas
         })

@@ -35,6 +35,7 @@ export default {
   data: function () {
     return {
       stockDatas: '',
+      predDatas: '',
       stockDatasSlice: '',
       selectDate: '',
       totalPageCount: 1,
@@ -58,13 +59,26 @@ export default {
           this.stockDatas = response.data.stock_datas
           this.totalPageCount = Math.ceil(response.data.stock_datas.length / this.singlePageDataNum)
           this.stockDatasSlice = this.stockDatas.slice(0, this.singlePageDataNum)
+          if (response.data.stock_prediction_datas !== undefined) {
+            this.predDatas = response.data.stock_prediction_datas
+            for (var i = 0; i < this.singlePageDataNum; i++) {
+              this.stockDatasSlice[i].prediction_record = this.predDatas[i].prediction_record
+            }
+          }
         })
         .catch(function (error) {
           console.log(error)
         })
     },
     changeStockSlice(currentPage) {
-      this.stockDatasSlice = this.stockDatas.slice((currentPage-1) * this.singlePageDataNum, currentPage * this.singlePageDataNum)
+      var startIndex = (currentPage-1) * this.singlePageDataNum
+      var endIndex = currentPage * this.singlePageDataNum
+      this.stockDatasSlice = this.stockDatas.slice(startIndex, endIndex)
+      if (this.predDatas != '') {
+        for (var i = 0; i < this.singlePageDataNum; i++) {
+          this.stockDatasSlice[i].prediction_record = this.predDatas[i+startIndex].prediction_record
+        }
+      }
     }
   }
 }
