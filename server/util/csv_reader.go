@@ -3,6 +3,7 @@ package util
 import (
     "os"
     "path"
+    "strings"
     "github.com/go-gota/gota/dataframe"
     "github.com/go-gota/gota/series"
     "greetlist/stock-web/server/model"
@@ -21,7 +22,7 @@ func init() {
     }
 }
 
-func ReadMarketRawData(stockCode, period string, dataLenGap int) model.MarketRawData {
+func ReadMarketRawData(stockCode, period, endDate string, dataLenGap int) model.MarketRawData {
     if dataLenGap < dataLenGapMin {
         dataLenGap = dataLenGapMin
     }
@@ -29,21 +30,49 @@ func ReadMarketRawData(stockCode, period string, dataLenGap int) model.MarketRaw
     marketRawDataPath := path.Join(conf.StockRawBaseDir, period, selectExchange(stockCode), stockCode+".csv")
     f, _ := os.OpenFile(marketRawDataPath, os.O_RDWR, os.ModePerm)
     df := dataframe.ReadCSV(f)
-    startIndex := df.Nrow() - dataLenGap
-    if startIndex < 0 {
-        startIndex = 0
-    }
-    res.Date = df.Col("trade_date").Records()[startIndex:]
-    res.Open = df.Col("open").Float()[startIndex:]
-    res.Close = df.Col("close").Float()[startIndex:]
-    res.High = df.Col("high").Float()[startIndex:]
-    res.Low = df.Col("low").Float()[startIndex:]
-    res.Volume = df.Col("vol").Float()[startIndex:]
-    res.Money = df.Col("amount").Float()[startIndex:]
+
+    dateStr := strings.ReplaceAll(endDate, "-", "")
+    indexList := getIndexRangeList(df, dateStr, dataLenGap)
+    rangeDf := df.Subset(indexList)
+    res.Date = rangeDf.Col("trade_date").Records()
+    res.Open = rangeDf.Col("open").Float()
+    res.Close = rangeDf.Col("close").Float()
+    res.High = rangeDf.Col("high").Float()
+    res.Low = rangeDf.Col("low").Float()
+    res.Volume = rangeDf.Col("vol").Float()
+    res.Money = rangeDf.Col("amount").Float()
     return res
 }
 
-func ReadFactorRawData(stockCode, period string, dataLenGap int) model.FactorRawData {
+func getIndexRangeList(df dataframe.DataFrame, endDate string, dataLenGap int) []int {
+    endIndex := -1
+    tradeDateList := df.Col("trade_date").Records()
+    for index, value := range(tradeDateList) {
+        if value == endDate {
+            endIndex = index
+            break
+        }
+    }
+    startIndex := endIndex - dataLenGap
+    var indexList []int
+    if endIndex != -1 && startIndex > 0 && endIndex < df.Nrow() {
+        for i := startIndex+1; i < endIndex+1; i++ {
+            indexList = append(indexList, i)
+        }
+    } else {
+        endIndex = df.Nrow()
+        startIndex = endIndex - dataLenGap
+        if startIndex < 0 {
+            startIndex = 0
+        }
+        for i := startIndex; i < df.Nrow(); i++ {
+            indexList = append(indexList, i)
+        }
+    }
+    return indexList
+}
+
+func ReadFactorRawData(stockCode, period, endDate string, dataLenGap int) model.FactorRawData {
     if dataLenGap < dataLenGapMin {
         dataLenGap = dataLenGapMin
     }
@@ -51,17 +80,17 @@ func ReadFactorRawData(stockCode, period string, dataLenGap int) model.FactorRaw
     maDataPath := path.Join(conf.StockMaBaseDir, period, selectExchange(stockCode), stockCode+".ma.csv")
     maFile, _ := os.OpenFile(maDataPath, os.O_RDWR, os.ModePerm)
     madf := dataframe.ReadCSV(maFile)
-    startIndex := madf.Nrow() - dataLenGap
-    if startIndex < 0 {
-        startIndex = 0
-    }
     //emaDataPath := path.Join(conf.StockEmaBaseDir, period, selectExchange(stockCode), stockCode+".ema.csv")
     //emaFile, _ := os.OpenFile(emaDataPath, os.O_RDWR, os.ModePerm)
     //emadf := dataframe.ReadCSV(emaFile)
 
-    res.MA13 = madf.Col("MA13").Float()[startIndex:]
-    res.MA34 = madf.Col("MA34").Float()[startIndex:]
-    res.MA55 = madf.Col("MA55").Float()[startIndex:]
+    dateStr := strings.ReplaceAll(endDate, "-", "")
+    indexList := getIndexRangeList(madf, dateStr, dataLenGap)
+    maRangeDf := madf.Subset(indexList)
+
+    res.MA13 = maRangeDf.Col("MA13").Float()
+    res.MA34 = maRangeDf.Col("MA34").Float()
+    res.MA55 = maRangeDf.Col("MA55").Float()
 
     //res.EMA13 = emadf.Col("EMA13").Float()[startIndex:]
     //res.EMA34 = emadf.Col("EMA34").Float()[startIndex:]
@@ -100,10 +129,17 @@ func ReadPredictionData(filePath string) model.SinglePredictRecord {
     predFile, _ := os.OpenFile(filePath, os.O_RDWR, os.ModePerm)
     preddf := dataframe.ReadCSV(predFile)
 
-    res.Date = preddf.Col("day_to_prediction").Records()
-    res.Open = preddf.Col("open").Float()
-    res.Close = preddf.Col("close").Float()
-    res.High = preddf.Col("high").Float()
-    res.Low = preddf.Col("low").Float()
+    filterDf := preddf.Filter(
+        dataframe.F{
+            Colname: "is_next",
+            Comparator: series.Eq,
+            Comparando: "True",
+        },
+    )
+    res.Date = filterDf.Col("trade_date").Records()
+    res.Open = filterDf.Col("open").Float()
+    res.Close = filterDf.Col("close").Float()
+    res.High = filterDf.Col("high").Float()
+    res.Low = filterDf.Col("low").Float()
     return res
 }

@@ -44,7 +44,7 @@ definitions:
     type: object
   model.GetRecommandStockResponse:
     properties:
-      stock_data:
+      stock_datas:
         items:
           $ref: '#/definitions/model.SingleStockData'
         type: array
@@ -52,6 +52,28 @@ definitions:
         items:
           $ref: '#/definitions/model.StockPredictItem'
         type: array
+    type: object
+  model.LoginRequest:
+    properties:
+      account:
+        type: string
+      passwd:
+        type: string
+    type: object
+  model.LoginResponse:
+    properties:
+      login_succ:
+        type: boolean
+    type: object
+  model.LogoutRequest:
+    properties:
+      account:
+        type: string
+    type: object
+  model.LogoutResponse:
+    properties:
+      logout_succ:
+        type: boolean
     type: object
   model.MarketRawData:
     properties:
@@ -233,4 +255,46 @@ paths:
           schema:
             $ref: '#/definitions/model.QueryStockDataResponse'
       summary: Query Sepcific Stock Computed Data
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: User Login
+      operationId: login
+      parameters:
+      - description: login
+        in: body
+        name: request_json
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+      summary: User Login
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: User Logout
+      operationId: logout
+      parameters:
+      - description: Logout
+        in: body
+        name: request_json
+        required: true
+        schema:
+          $ref: '#/definitions/model.LogoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LogoutResponse'
+      summary: User Logout
 swagger: "2.0"

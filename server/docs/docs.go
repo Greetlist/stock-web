@@ -128,6 +128,70 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/auth/login": {
+            "post": {
+                "description": "User Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Login",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "description": "User Logout",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Logout",
+                "operationId": "logout",
+                "parameters": [
+                    {
+                        "description": "Logout",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LogoutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LogoutResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -198,7 +262,7 @@ var doc = `{
         "model.GetRecommandStockResponse": {
             "type": "object",
             "properties": {
-                "stock_data": {
+                "stock_datas": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.SingleStockData"
@@ -209,6 +273,41 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/model.StockPredictItem"
                     }
+                }
+            }
+        },
+        "model.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "passwd": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "login_succ": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.LogoutRequest": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.LogoutResponse": {
+            "type": "object",
+            "properties": {
+                "logout_succ": {
+                    "type": "boolean"
                 }
             }
         },

@@ -29,5 +29,14 @@ func InitRouterAndMiddleware() *gin.Engine {
     */
     ApiRouterGroup := Router.Group("api")
     routers.InitStockApiRouter(ApiRouterGroup)
+
+    //登陆路由
+    AuthRouterGroup := Router.Group("auth")
+    //AuthRouterGroup.Use(midware.CheckLoginStatus())
+    routers.InitAuthApiRouter(AuthRouterGroup)
+
+    //用户绑定操作，需要验证登陆Cookie
+
+
     return Router
 }

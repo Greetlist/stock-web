@@ -21,7 +21,7 @@ type GetAllStockCodeResponse struct {
 }
 
 type GetRecommandStockResponse struct {
-    StockRawData []SingleStockData `json:"stock_data"`
+    StockRawData []SingleStockData `json:"stock_datas"`
     StockPredictDatas []StockPredictItem `json:"stock_prediction_datas"`
 }
 // Response Struct end

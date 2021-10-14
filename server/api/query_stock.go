@@ -5,6 +5,7 @@ import (
     "io/ioutil"
     "strings"
     "fmt"
+    "time"
     _ "os"
     "path"
     "errors"
@@ -30,15 +31,16 @@ func QueryStockData(context *gin.Context) {
         return
     }
     var response model.QueryStockDataResponse
+    todayDateStr := time.Now().Format("2006-01-02")
     for _, stockCode := range(request.StockList) {
-        if data, err := extractStockRawData(stockCode, request.QueryDataLen); err == nil {
+        if data, err := extractStockRawData(stockCode, todayDateStr, request.QueryDataLen); err == nil {
             response.StockTotalDatas = append(response.StockTotalDatas, data)
         }
     }
     context.JSON(http.StatusOK, response)
 }
 
-func extractStockRawData(stockCode string, qLen int) (model.SingleStockData, error) {
+func extractStockRawData(stockCode, endDate string, qLen int) (model.SingleStockData, error) {
     var singleStockData model.SingleStockData
     stockInfoList := util.ReadStockBasicInfo(stockCode)
     if len(stockInfoList) == 0 {
@@ -49,8 +51,8 @@ func extractStockRawData(stockCode string, qLen int) (model.SingleStockData, err
     periodList := []string{"day", "week", "month"}
     for _, period := range(periodList) {
         var curPeriodData model.StockSinglePeriodData
-        curPeriodData.MarketData = util.ReadMarketRawData(stockCode, period, qLen)
-        curPeriodData.FactorData = util.ReadFactorRawData(stockCode, period, qLen)
+        curPeriodData.MarketData = util.ReadMarketRawData(stockCode, period, endDate, qLen)
+        curPeriodData.FactorData = util.ReadFactorRawData(stockCode, period, endDate, qLen)
         curPeriodData.PeriodType = period
         singleStockData.StockRawDatas = append(singleStockData.StockRawDatas, curPeriodData)
     }
@@ -135,12 +137,13 @@ func GetRecommandStockPrediction(context *gin.Context) {
     predictionDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"))
     fileInfoList, _ := ioutil.ReadDir(predictionDir)
     for _, fileItem := range(fileInfoList) {
-        if !strings.HasSuffix(fileItem.Name(), "compared.csv") {
+        if !strings.HasSuffix(fileItem.Name(), "compared.csv") && strings.HasSuffix(fileItem.Name(), ".csv") {
             stockCode := strings.ReplaceAll(fileItem.Name(), ".csv", "")
             var curPredictItem model.StockPredictItem
+            fmt.Printf("%s\n", path.Join(predictionDir, fileItem.Name()))
             curPredictItem.StockInfo = util.ReadStockBasicInfo(stockCode)[0]
             curPredictItem.PredictionRecord = util.ReadPredictionData(path.Join(predictionDir, fileItem.Name()))
-            if curRawData, err := extractStockRawData(stockCode, request.QueryDataLen); err == nil {
+            if curRawData, err := extractStockRawData(stockCode, request.QueryDateString, request.QueryDataLen); err == nil {
                 response.StockRawData = append(response.StockRawData, curRawData)
                 response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
             }
