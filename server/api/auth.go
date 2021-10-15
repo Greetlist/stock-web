@@ -3,12 +3,14 @@ package api
 import (
     "time"
     "net/http"
+    "strings"
+    "strconv"
     "crypto/sha256"
     "github.com/gin-gonic/gin"
     "github.com/gomodule/redigo/redis"
 
     "greetlist/stock-web/server/model"
-    _ "greetlist/stock-web/server/database"
+    "greetlist/stock-web/server/database"
     redisMod "greetlist/stock-web/server/redis"
 )
 
@@ -27,30 +29,62 @@ func Login(context *gin.Context) {
         context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
+
     var response model.LoginResponse
-    if !verifyAccountPasswd(request.Account, request.Password) {
+    if argsContainIllegueWord(request) || !verifyAccountPasswd(request.Account, request.Password) {
+        response.LoginSucc = false
+        context.JSON(http.StatusOK, response)
+        return
+    }
+
+    cookieValue := genRandomCookieValue(request.Account, request.Password)
+    if !setCookieToRedis(cookieValue) {
         response.LoginSucc = false
     } else {
-        cookieValue := genRandomCookieValue(request.Account, request.Password)
-        if !setCookieToRedis(cookieValue) {
-            response.LoginSucc = false
-        } else {
-            response.LoginSucc = true
-            cookie := &http.Cookie{
-                Name: "session_id",
-                Value: cookieValue,
-                Path: "/",
-                HttpOnly: true,
-            }
-            http.SetCookie(context.Writer, cookie)
+        response.LoginSucc = true
+        cookie := &http.Cookie{
+            Name: "session_id",
+            Value: cookieValue,
+            Path: "/",
+            HttpOnly: true,
         }
+        http.SetCookie(context.Writer, cookie)
     }
     context.JSON(http.StatusOK, response)
 }
 
+func argsContainIllegueWord(arg interface{}) bool {
+    switch arg.(type) {
+    case model.LoginRequest:
+        curStruct, _ := arg.(model.LoginRequest)
+        return containSqlKeyWord(curStruct.Account) || containSqlKeyWord(curStruct.Password)
+    }
+    return false
+}
+
+func containSqlKeyWord(str string) bool {
+    lowerStr := strings.ToLower(str)
+    checkKeyWordList := []string{
+        "select", "delete", "drop",
+        "update", "create", "alter",
+        "index", "change", "commit"}
+    for _, keyWord := range(checkKeyWordList) {
+        if strings.Contains(lowerStr, keyWord) {
+            return true
+        }
+    }
+    return false
+}
+
 func verifyAccountPasswd(account, passwd string) bool {
-    dbConn, _ := database.DBConnPool
+    dbConn, _ := <-database.DBConnPool
     if dbConn == nil {
+        return false
+    }
+    var fundAccount model.FundAccount
+    dbConn.Where("account = ?", account).First(&fundAccount)
+    database.DBConnPool <- dbConn
+    if fundAccount.Password != passwd {
         return false
     }
     return true
@@ -58,8 +92,26 @@ func verifyAccountPasswd(account, passwd string) bool {
 
 func genRandomCookieValue(account, passwd string) string {
     now := time.Now().Unix()
-    shaBytes := sha256.Sum256([]byte(string(now) + account + passwd))
-    return string(shaBytes[:])
+    var lowMask byte = 15
+    shaBytes := sha256.Sum256([]byte(strconv.FormatInt(now, 10) + account + passwd))
+    var newBytesArr [len(shaBytes)*2]byte
+    for i := 0; i < len(shaBytes); i++ {
+        var high byte = (shaBytes[i] >> 4)
+        var low byte = (shaBytes[i] & lowMask)
+        high += offset(high)
+        low += offset(low)
+        newBytesArr[i*2] = high
+        newBytesArr[i*2+1] = low
+    }
+    res := string(newBytesArr[:])
+    return res
+}
+
+func offset(b byte) byte {
+    if b > 9 {
+        return 87
+    }
+    return 48
 }
 
 func setCookieToRedis(cookie string) bool {

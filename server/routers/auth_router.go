@@ -6,7 +6,6 @@ import (
 )
 
 func InitAuthApiRouter(RouterGroup *gin.RouterGroup) {
-    StockRouterGroup := RouterGroup.Group("stock")
-    StockRouterGroup.POST("/login", api.Login)
-    StockRouterGroup.POST("/logout", api.Logout)
+    RouterGroup.POST("/login", api.Login)
+    RouterGroup.POST("/logout", api.Logout)
 }
