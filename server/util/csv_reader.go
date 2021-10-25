@@ -115,10 +115,14 @@ func ReadStockBasicInfo(stockCode string) []model.StockBasicInfo {
     dataLen := filterDf.Nrow()
     stockCodeList := filterDf.Col("ts_code")
     stockNameList := filterDf.Col("name")
+    stockIndustryList := filterDf.Col("industry")
+    stockExchangeList := filterDf.Col("exchange")
     for idx := 0; idx < dataLen; idx++ {
         var curStockItem model.StockBasicInfo
         curStockItem.StockCode = stockCodeList.Elem(idx).String()
         curStockItem.StockName = stockNameList.Elem(idx).String()
+        curStockItem.StockIndustry = stockIndustryList.Elem(idx).String()
+        curStockItem.Exchange = stockExchangeList.Elem(idx).String()
         res = append(res, curStockItem)
     }
     return res

@@ -45,8 +45,8 @@ export default {
           left: 'right',
           top: 'bottom',
           textStyle: {
-            width: '1vh',
-            height: '1vh' 
+            width: '1px',
+            height: '1px'
           }
         },
         tooltip: {
@@ -81,15 +81,16 @@ export default {
         },
         grid: [
           {
-            left: '25%',
-            right: '10%',
-            height: '45%'
+            left: 'center',
+            width: '90%',
+            height: '35%',
+            top: '5%'
           },
           {
-            left: '25%',
-            right: '10%',
+            left: 'center',
+            width: '90%',
             height: '10%',
-            bottom: '15%'
+            bottom: '25%'
           }
         ],
         xAxis: [

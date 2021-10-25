@@ -2,6 +2,8 @@ package model
 
 type FollowStock struct {
     Account string `gorm:"primaryKey"`
-    InstId string `gorm:"primaryKey"`
-    ExchangeId string `gorm:"<-"`
+    StockCode string `gorm:"primaryKey"`
+    Exchange string `gorm:"<-"`
+    Name string `gorm:"<-"`
+    Industry string `gorm:"<-"`
 }

@@ -1,28 +1,36 @@
 <template>
+  <!--
   <div class="header">
     <div class="collapse-btn" v-on:click="changeStatus">
       <i v-if="collapse" class="el-icon-s-unfold"></i>
       <i v-else class="el-icon-s-fold"></i>
     </div>
   </div>
-  <el-container>
-    <el-aside>
-      <AsideMenu></AsideMenu>
-    </el-aside>
-    <!--<transition :duration="{ enter: 800, leave: 100}" mode="out-in" name="el-fade-in-linear">-->
-    <el-main>
-      <router-view></router-view>
-    </el-main>
+  -->
+  <el-header>
+    <HeadNavBar>
+    </HeadNavBar>
+  </el-header>
+  <!--
+  <el-aside>
+    <AsideMenu></AsideMenu>
+  </el-aside>
+  -->
+  <!--<transition :duration="{ enter: 800, leave: 100}" mode="out-in" name="el-fade-in-linear">-->
+  <el-main>
+    <router-view></router-view>
+  </el-main>
     <!--</transition>-->
-  </el-container>
 </template>
 
 <script>
-import AsideMenu from '@/components/AsideMenu.vue'
+// import AsideMenu from '@/components/AsideMenu.vue'
+import HeadNavBar from '@/components/NavBar.vue'
 export default {
   name: 'HomeView',
   components: {
-    AsideMenu
+    // AsideMenu
+    HeadNavBar
   },
   methods: {
     changeStatus: function () {

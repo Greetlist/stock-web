@@ -3,13 +3,13 @@ package api
 import (
     "time"
     "net/http"
-    "strings"
     "strconv"
     "crypto/sha256"
     "github.com/gin-gonic/gin"
     "github.com/gomodule/redigo/redis"
 
     "greetlist/stock-web/server/model"
+    "greetlist/stock-web/server/util"
     "greetlist/stock-web/server/database"
     redisMod "greetlist/stock-web/server/redis"
 )
@@ -31,7 +31,7 @@ func Login(context *gin.Context) {
     }
 
     var response model.LoginResponse
-    if argsContainIllegueWord(request) || !verifyAccountPasswd(request.Account, request.Password) {
+    if util.ArgsContainIllegueWord(request) || !verifyAccountPasswd(request.Account, request.Password) {
         response.LoginSucc = false
         context.JSON(http.StatusOK, response)
         return
@@ -51,29 +51,6 @@ func Login(context *gin.Context) {
         http.SetCookie(context.Writer, cookie)
     }
     context.JSON(http.StatusOK, response)
-}
-
-func argsContainIllegueWord(arg interface{}) bool {
-    switch arg.(type) {
-    case model.LoginRequest:
-        curStruct, _ := arg.(model.LoginRequest)
-        return containSqlKeyWord(curStruct.Account) || containSqlKeyWord(curStruct.Password)
-    }
-    return false
-}
-
-func containSqlKeyWord(str string) bool {
-    lowerStr := strings.ToLower(str)
-    checkKeyWordList := []string{
-        "select", "delete", "drop",
-        "update", "create", "alter",
-        "index", "change", "commit"}
-    for _, keyWord := range(checkKeyWordList) {
-        if strings.Contains(lowerStr, keyWord) {
-            return true
-        }
-    }
-    return false
 }
 
 func verifyAccountPasswd(account, passwd string) bool {

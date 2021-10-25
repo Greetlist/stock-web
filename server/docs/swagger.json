@@ -176,9 +176,60 @@
                     }
                 }
             }
+        },
+        "/user/add_prefer_stock": {
+            "post": {
+                "description": "User AddPreferStock",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User AddPreferStock",
+                "operationId": "addPreferStock",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddPreferStockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AddPreferStockResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "model.AddPreferStockRequest": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "stock_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AddPreferStockResponse": {
+            "type": "object",
+            "properties": {
+                "is_success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "model.FactorRawData": {
             "type": "object",
             "properties": {
@@ -419,9 +470,17 @@
         "model.StockBasicInfo": {
             "type": "object",
             "properties": {
+                "exchange": {
+                    "type": "string",
+                    "example": "BJSE/SZSE/SSE"
+                },
                 "stock_code": {
                     "type": "string",
                     "example": "002142.SZ"
+                },
+                "stock_industry": {
+                    "type": "string",
+                    "example": "石油"
                 },
                 "stock_name": {
                     "type": "string",

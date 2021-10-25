@@ -41,6 +41,8 @@ type StockPredictItem struct {
 type StockBasicInfo struct {
     StockCode string `json:"stock_code" example:"002142.SZ" csv:"ts_code"`
     StockName string `json:"stock_name" example:"宁波银行" csv:"name"`
+    StockIndustry string `json:"stock_industry" example:"石油" csv:"industry"`
+    Exchange string `json:"exchange" example:"BJSE/SZSE/SSE"`
 }
 
 type SingleStockData struct {

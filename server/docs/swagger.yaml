@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  model.AddPreferStockRequest:
+    properties:
+      account:
+        type: string
+      stock_code:
+        type: string
+    type: object
+  model.AddPreferStockResponse:
+    properties:
+      is_success:
+        type: boolean
+    type: object
   model.FactorRawData:
     properties:
       ema13:
@@ -156,8 +168,14 @@ definitions:
     type: object
   model.StockBasicInfo:
     properties:
+      exchange:
+        example: BJSE/SZSE/SSE
+        type: string
       stock_code:
         example: 002142.SZ
+        type: string
+      stock_industry:
+        example: 石油
         type: string
       stock_name:
         example: 宁波银行
@@ -297,4 +315,25 @@ paths:
           schema:
             $ref: '#/definitions/model.LogoutResponse'
       summary: User Logout
+  /user/add_prefer_stock:
+    post:
+      consumes:
+      - application/json
+      description: User AddPreferStock
+      operationId: addPreferStock
+      parameters:
+      - description: login
+        in: body
+        name: request_json
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddPreferStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AddPreferStockResponse'
+      summary: User AddPreferStock
 swagger: "2.0"
