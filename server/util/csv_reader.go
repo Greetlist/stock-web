@@ -4,6 +4,8 @@ import (
     "os"
     "path"
     "strings"
+    "bufio"
+    "fmt"
     "github.com/go-gota/gota/dataframe"
     "github.com/go-gota/gota/series"
     "greetlist/stock-web/server/model"
@@ -128,16 +130,26 @@ func ReadStockBasicInfo(stockCode string) []model.StockBasicInfo {
     return res
 }
 
-func ReadPredictionData(filePath string) model.SinglePredictRecord {
+func ReadPredictionData(filePath string, getNext bool) model.SinglePredictRecord {
     var res model.SinglePredictRecord
-    predFile, _ := os.OpenFile(filePath, os.O_RDWR, os.ModePerm)
+    predFile, err := os.OpenFile(filePath, os.O_RDWR, os.ModePerm)
+    if err != nil {
+        fmt.Printf("Open File Error: %s.\n", err)
+        return res
+    }
     preddf := dataframe.ReadCSV(predFile)
 
+    var compStr string
+    if getNext {
+        compStr = "True"
+    } else {
+        compStr = "False"
+    }
     filterDf := preddf.Filter(
         dataframe.F{
             Colname: "is_next",
             Comparator: series.Eq,
-            Comparando: "True",
+            Comparando: compStr,
         },
     )
     res.Date = filterDf.Col("trade_date").Records()
@@ -145,5 +157,23 @@ func ReadPredictionData(filePath string) model.SinglePredictRecord {
     res.Close = filterDf.Col("close").Float()
     res.High = filterDf.Col("high").Float()
     res.Low = filterDf.Col("low").Float()
+    return res
+}
+
+func ReadPredictionMsg(filePath string) string {
+    file, err := os.Open(filePath)
+    if err != nil {
+        fmt.Printf("Open File Error: %s\n", err)
+        return ""
+    }
+    defer func() {
+        file.Close()
+    }()
+
+    var res string
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        res += scanner.Text()
+    }
     return res
 }

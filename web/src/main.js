@@ -19,7 +19,10 @@ import {
   ElAutocomplete,
   ElDatePicker,
   ElPagination,
-  ElInputNumber
+  ElInputNumber,
+  ElTable,
+  ElTableColumn,
+  ElNotification
 } from 'element-plus'
 
 // Icons
@@ -50,8 +53,13 @@ app.use(BrushFilled)
 app.use(ElDatePicker)
 app.use(ElPagination)
 app.use(ElInputNumber)
+app.use(ElTable)
+app.use(ElTableColumn)
+app.use(ElNotification)
 
 // for global var
 app.config.globalProperties.$server = 'http://121.5.100.186:8082'
+app.config.globalProperties.$session_id = ''
+app.config.globalProperties.$account = ''
 
 app.use(store).use(router).mount('#app')

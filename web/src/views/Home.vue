@@ -7,20 +7,22 @@
     </div>
   </div>
   -->
-  <el-header>
-    <HeadNavBar>
-    </HeadNavBar>
-  </el-header>
-  <!--
-  <el-aside>
-    <AsideMenu></AsideMenu>
-  </el-aside>
-  -->
-  <!--<transition :duration="{ enter: 800, leave: 100}" mode="out-in" name="el-fade-in-linear">-->
-  <el-main>
-    <router-view></router-view>
-  </el-main>
+  <el-container>
+    <el-header>
+      <HeadNavBar>
+      </HeadNavBar>
+    </el-header>
+    <!--
+    <el-aside>
+      <AsideMenu></AsideMenu>
+    </el-aside>
+    -->
+    <!--<transition :duration="{ enter: 800, leave: 100}" mode="out-in" name="el-fade-in-linear">-->
+    <el-main>
+      <router-view></router-view>
+    </el-main>
     <!--</transition>-->
+  </el-container>
 </template>
 
 <script>
@@ -77,5 +79,9 @@ export default {
   height: 100vh;
   width: auto;
   background-color: #545c64;
+}
+
+.el-main {
+  padding-top: 20vh;
 }
 </style>

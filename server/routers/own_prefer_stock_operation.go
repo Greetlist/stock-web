@@ -6,7 +6,8 @@ import (
 )
 
 func InitOwnPreferStockOperationApiRouter(RouterGroup *gin.RouterGroup) {
-    RouterGroup.POST("/user/add_prefer_stock", api.AddPreferStock)
-    //RouterGroup.POST("/user/delete_prefer_stock", api.DeletePreferStock)
-    //RouterGroup.POST("/user/get_prefer_stock", api.GetPreferStock)
+    UserRouterGroup := RouterGroup.Group("user")
+    UserRouterGroup.POST("/addPreferStock", api.AddPreferStock)
+    UserRouterGroup.POST("/deletePreferStock", api.DeletePreferStock)
+    UserRouterGroup.POST("/getPreferStock", api.GetPreferStock)
 }

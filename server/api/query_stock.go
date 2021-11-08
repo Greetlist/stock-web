@@ -142,12 +142,37 @@ func GetRecommandStockPrediction(context *gin.Context) {
             var curPredictItem model.StockPredictItem
             fmt.Printf("%s\n", path.Join(predictionDir, fileItem.Name()))
             curPredictItem.StockInfo = util.ReadStockBasicInfo(stockCode)[0]
-            curPredictItem.PredictionRecord = util.ReadPredictionData(path.Join(predictionDir, fileItem.Name()))
+            curPredictItem.PredictionRecord = util.ReadPredictionData(path.Join(predictionDir, fileItem.Name()), true)
+            curPredictItem.ShowMsg = util.ReadPredictionMsg(path.Join(predictionDir, "stock_Kline", strings.ReplaceAll(fileItem.Name(), "csv", "txt")))
             if curRawData, err := extractStockRawData(stockCode, request.QueryDateString, request.QueryDataLen); err == nil {
                 response.StockRawData = append(response.StockRawData, curRawData)
                 response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
             }
         }
     }
+    context.JSON(http.StatusOK, response)
+}
+
+// GetTotalMarketIndexData godoc
+// @Summary Query Sepcific All Index Computed Data
+// @Description Return Strategy Sepcific Computed Data
+// @ID getTotalMarketIndexData
+// @Accept json
+// @Produce json
+// @Param request_json body model.GetTotalMarketIndexDataRequest true "Query Index "
+// @Success 200 {object} model.GetTotalMarketIndexDataResponse
+// @Router /api/stock/getTotalMarketIndexData [post]
+func GetTotalMarketIndexData(context *gin.Context) {
+    request := model.GetTotalMarketIndexDataRequest{}
+    if err := context.BindJSON(&request); err != nil {
+        context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+    var response model.GetTotalMarketIndexDataResponse
+    indexFileDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"), "my_index_Kline")
+    fmt.Printf("%s\n", path.Join(indexFileDir, "all.csv"))
+    response.IndexRawData = util.ReadPredictionData(path.Join(indexFileDir, "all.csv"), false)
+    response.IndexPredData = util.ReadPredictionData(path.Join(indexFileDir, "all.csv"), true)
+    response.ShowMsg = util.ReadPredictionMsg(path.Join(indexFileDir, "all.txt"))
     context.JSON(http.StatusOK, response)
 }

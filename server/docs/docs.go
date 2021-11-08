@@ -29,6 +29,70 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/auth/login": {
+            "post": {
+                "description": "User Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Login",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "description": "User Logout",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Logout",
+                "operationId": "logout",
+                "parameters": [
+                    {
+                        "description": "Logout",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LogoutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LogoutResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/stock/getAllStockCode": {
             "get": {
                 "description": "Return All Stock Code",
@@ -97,6 +161,38 @@ var doc = `{
                 }
             }
         },
+        "/api/stock/getTotalMarketIndexData": {
+            "post": {
+                "description": "Return Strategy Sepcific Computed Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Query Sepcific All Index Computed Data",
+                "operationId": "getTotalMarketIndexData",
+                "parameters": [
+                    {
+                        "description": "Query Index ",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetTotalMarketIndexDataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetTotalMarketIndexDataResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/stock/queryStockData": {
             "post": {
                 "description": "Return Strategy Sepcific Computed Data",
@@ -129,71 +225,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/login": {
-            "post": {
-                "description": "User Login",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "User Login",
-                "operationId": "login",
-                "parameters": [
-                    {
-                        "description": "login",
-                        "name": "request_json",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.LoginRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.LoginResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/logout": {
-            "post": {
-                "description": "User Logout",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "User Logout",
-                "operationId": "logout",
-                "parameters": [
-                    {
-                        "description": "Logout",
-                        "name": "request_json",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.LogoutRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.LogoutResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/add_prefer_stock": {
+        "/api/user/addPreferStock": {
             "post": {
                 "description": "User AddPreferStock",
                 "consumes": [
@@ -224,6 +256,70 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/api/user/deletePreferStock": {
+            "post": {
+                "description": "User DeletePreferStock",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User DeletePreferStock",
+                "operationId": "deletePreferStock",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.DeletePreferStockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DeletePreferStockResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/getPreferStock": {
+            "post": {
+                "description": "User GetPreferStock",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User GetPreferStock",
+                "operationId": "getPreferStock",
+                "parameters": [
+                    {
+                        "description": "login",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetPreferStockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetPreferStockResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -241,6 +337,31 @@ var doc = `{
         "model.AddPreferStockResponse": {
             "type": "object",
             "properties": {
+                "error_msg": {
+                    "type": "string"
+                },
+                "is_success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.DeletePreferStockRequest": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "stock_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.DeletePreferStockResponse": {
+            "type": "object",
+            "properties": {
+                "error_msg": {
+                    "type": "string"
+                },
                 "is_success": {
                     "type": "boolean"
                 }
@@ -287,6 +408,26 @@ var doc = `{
                 }
             }
         },
+        "model.FollowStock": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "industry": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "stock_code": {
+                    "type": "string"
+                }
+            }
+        },
         "model.GetAllStockCodeResponse": {
             "type": "object",
             "properties": {
@@ -295,6 +436,31 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/model.StockBasicInfo"
                     }
+                }
+            }
+        },
+        "model.GetPreferStockRequest": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetPreferStockResponse": {
+            "type": "object",
+            "properties": {
+                "error_msg": {
+                    "type": "string"
+                },
+                "follow_stock_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.FollowStock"
+                    }
+                },
+                "is_success": {
+                    "type": "boolean"
                 }
             }
         },
@@ -327,6 +493,29 @@ var doc = `{
                 }
             }
         },
+        "model.GetTotalMarketIndexDataRequest": {
+            "type": "object",
+            "properties": {
+                "query_date": {
+                    "type": "string",
+                    "example": "2021-07-01"
+                }
+            }
+        },
+        "model.GetTotalMarketIndexDataResponse": {
+            "type": "object",
+            "properties": {
+                "index_pred_data": {
+                    "$ref": "#/definitions/model.SinglePredictRecord"
+                },
+                "index_raw_data": {
+                    "$ref": "#/definitions/model.SinglePredictRecord"
+                },
+                "show_msg": {
+                    "type": "string"
+                }
+            }
+        },
         "model.LoginRequest": {
             "type": "object",
             "properties": {
@@ -341,6 +530,9 @@ var doc = `{
         "model.LoginResponse": {
             "type": "object",
             "properties": {
+                "err_msg": {
+                    "type": "string"
+                },
                 "login_succ": {
                     "type": "boolean"
                 }
@@ -357,6 +549,9 @@ var doc = `{
         "model.LogoutResponse": {
             "type": "object",
             "properties": {
+                "err_msg": {
+                    "type": "string"
+                },
                 "logout_succ": {
                     "type": "boolean"
                 }
@@ -509,6 +704,9 @@ var doc = `{
             "properties": {
                 "prediction_record": {
                     "$ref": "#/definitions/model.SinglePredictRecord"
+                },
+                "show_msg": {
+                    "type": "string"
                 },
                 "stock_info": {
                     "$ref": "#/definitions/model.StockBasicInfo"

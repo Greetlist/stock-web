@@ -36,6 +36,7 @@ type SinglePredictRecord struct {
 type StockPredictItem struct {
     StockInfo StockBasicInfo `json:"stock_info"`
     PredictionRecord SinglePredictRecord `json:"prediction_record"`
+    ShowMsg string `json:"show_msg"`
 }
 
 type StockBasicInfo struct {

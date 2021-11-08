@@ -24,4 +24,16 @@ type GetRecommandStockResponse struct {
     StockRawData []SingleStockData `json:"stock_datas"`
     StockPredictDatas []StockPredictItem `json:"stock_prediction_datas"`
 }
+
+type GetTotalMarketIndexDataRequest struct {
+    QueryDateString string `json:"query_date" example:"2021-07-01"`
+}
+
+type GetTotalMarketIndexDataResponse struct {
+    IndexRawData SinglePredictRecord `json:"index_raw_data"`
+    IndexPredData SinglePredictRecord `json:"index_pred_data"`
+    ShowMsg string `json:"show_msg"`
+}
+
+
 // Response Struct end

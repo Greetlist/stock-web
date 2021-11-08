@@ -22,7 +22,7 @@ import (
 // @Produce json
 // @Param request_json body model.LoginRequest true "login"
 // @Success 200 {object} model.LoginResponse
-// @Router /auth/login [post]
+// @Router /api/auth/login [post]
 func Login(context *gin.Context) {
     request := model.LoginRequest{}
     if err := context.BindJSON(&request); err != nil {
@@ -111,7 +111,7 @@ func setCookieToRedis(cookie string) bool {
 // @Produce json
 // @Param request_json body model.LogoutRequest true "Logout"
 // @Success 200 {object} model.LogoutResponse
-// @Router /auth/logout [post]
+// @Router /api/auth/logout [post]
 func Logout(context *gin.Context) {
     request := model.LogoutRequest{}
     if err := context.BindJSON(&request); err != nil {

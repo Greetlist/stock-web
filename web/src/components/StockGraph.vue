@@ -1,8 +1,13 @@
 <template>
   <v-chart class='chart' :option='option' ref="stockGraph"/>
+  <el-button type="primary" v-on:click="addPreferStock">AddToPreferStock</el-button>
 </template>
 
 <script>
+const axios = require('axios').default
+const header = {
+  'Access-Control-Allow-Origin': '*'
+}
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { 
@@ -19,6 +24,8 @@ import {
   BrushComponent
 } from 'echarts/components'
 import VChart from 'vue-echarts'
+import { getCurrentInstance, h } from 'vue'
+import { ElNotification } from 'element-plus'
 
 use([
   CanvasRenderer,
@@ -36,6 +43,9 @@ export default {
   name: 'StockGraph',
   components: {
     VChart
+  },
+  created () {
+    this.server = getCurrentInstance().appContext.config.globalProperties.$server
   },
   data: function () {
     return {
@@ -149,7 +159,8 @@ export default {
       ma34List: [],
       ma55List: [],
       brushStartDate: '',
-      brushEndDate: ''
+      brushEndDate: '',
+      server: ''
     }
   },
   props: {
@@ -295,6 +306,38 @@ export default {
             xAxisIndex: 0
           }
         ]
+      })
+    },
+    addPreferStock () {
+      var param = {
+        account: 'greetlist',
+        stock_code: this.stockCode
+      }
+      axios.post(this.server+'/api/user/addPreferStock', param, { header })
+        .then((response) => {
+          var success = response.data.is_success
+          if (success) {
+            this.notiSuccess(response.data.error_msg)
+          } else {
+            this.notiFailed(response.data.error_msg)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    notiSuccess () {
+      ElNotification({
+        title: 'Result',
+        message: h('i', {style: 'color: green'}, 'Add Prefer Stock Success'),
+        type: 'success'
+      })
+    },
+    notiFailed (errMsg) {
+      ElNotification({
+        title: 'Result',
+        message: h('i', {style: 'color: red'}, errMsg),
+        type: 'error'
       })
     }
   }

@@ -53,6 +53,11 @@ var menuList = [
         name: 'Query Stock',
         id: 'query-stock',
         route: '/queryStockView'
+      },
+      {
+        name: 'Total Market',
+        id: 'total-market',
+        route: '/totalMarket'
       }
     ]
   },
@@ -63,8 +68,8 @@ var menuList = [
     subMenuList: [
       {
         name: 'Stock Hold',
-        id: '',
-        route: '#'
+        id: 'get-stock-hold',
+        route: '/getStockHold'
       },
       {
         name: 'Statistic',
@@ -111,58 +116,58 @@ var menuList = [
         route: '#'
       }
     ]
-  },
-  {
-    name: 'Report',
-    id: 'report',
-    headIcon: 'el-icon-printer',
-    subMenuList: [
-      {
-        name: 'Index OverView',
-        id: 'index-overview',
-        route: '#'
-      },
-      {
-        name: 'Other Format',
-        id: 'other-format',
-        route: '#'
-      }
-    ]
-  },
-  {
-    name: 'Settings',
-    id: 'settings',
-    headIcon: 'el-icon-setting',
-    subMenuList: [
-      {
-        name: 'Server Settings',
-        id: 'server-settings',
-        route: '#'
-      },
-      {
-        name: 'Other Settings',
-        id: 'other-settings',
-        route: '#'
-      }
-    ]
-  },
-  {
-    name: 'Enjoy PornHub',
-    id: 'pornhub',
-    headIcon: 'el-icon-s-promotion',
-    subMenuList: [
-      {
-        name: 'Asia',
-        id: 'asia',
-        route: 'cn.pornhub.com'
-      },
-      {
-        name: 'Japan',
-        id: 'japan',
-        route: 'japan.pornhub.com'
-      }
-    ]
   }
+//  {
+//    name: 'Report',
+//    id: 'report',
+//    headIcon: 'el-icon-printer',
+//    subMenuList: [
+//      {
+//        name: 'Index OverView',
+//        id: 'index-overview',
+//        route: '#'
+//      },
+//      {
+//        name: 'Other Format',
+//        id: 'other-format',
+//        route: '#'
+//      }
+//    ]
+//  },
+//  {
+//    name: 'Settings',
+//    id: 'settings',
+//    headIcon: 'el-icon-setting',
+//    subMenuList: [
+//      {
+//        name: 'Server Settings',
+//        id: 'server-settings',
+//        route: '#'
+//      },
+//      {
+//        name: 'Other Settings',
+//        id: 'other-settings',
+//        route: '#'
+//      }
+//    ]
+//  },
+//  {
+//    name: 'Enjoy PornHub',
+//    id: 'pornhub',
+//    headIcon: 'el-icon-s-promotion',
+//    subMenuList: [
+//      {
+//        name: 'Asia',
+//        id: 'asia',
+//        route: 'cn.pornhub.com'
+//      },
+//      {
+//        name: 'Japan',
+//        id: 'japan',
+//        route: 'japan.pornhub.com'
+//      }
+//    ]
+//  }
 ]
 
 export default {
