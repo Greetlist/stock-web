@@ -22,7 +22,8 @@ import {
   ElInputNumber,
   ElTable,
   ElTableColumn,
-  ElNotification
+  ElNotification,
+  ElDialog
 } from 'element-plus'
 
 // Icons
@@ -56,6 +57,7 @@ app.use(ElInputNumber)
 app.use(ElTable)
 app.use(ElTableColumn)
 app.use(ElNotification)
+app.use(ElDialog)
 
 // for global var
 app.config.globalProperties.$server = 'http://121.5.100.186:8082'
