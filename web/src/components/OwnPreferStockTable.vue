@@ -78,6 +78,7 @@ export default {
     },
     showMarket () {
       console.log(this.selectRowStockCode)
+      this.$router.push({ name: 'showSingleStockMarket', params: {stockCode: this.selectRowStockCode}})
     },
     showDeleteDialog () {
       this.deleteVisible = true

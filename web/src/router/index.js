@@ -22,6 +22,11 @@ const routes = [
     path: '/getStockHold',
     name: 'getStockHold',
     component: () => import('@/views/StockHoldView.vue')
+  },
+  {
+    path: '/showSingleStockMarket',
+    name: 'showSingleStockMarket',
+    component: () => import('@/views/SingleStockMarket.vue')
   }
 ]
 
