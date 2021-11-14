@@ -52,7 +52,8 @@ export default {
   methods: {
     getRecommandStock () {
       var param = {
-        query_date: this.selectDate
+        query_date: this.selectDate,
+        stock_code: ""
       }
       axios.post(this.server+'/api/stock/getRecommandStockPrediction', param, { header })
         .then((response) => {

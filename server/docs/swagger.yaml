@@ -98,6 +98,8 @@ definitions:
       query_date:
         example: "2021-07-01"
         type: string
+      stock_code:
+        type: string
     type: object
   model.GetRecommandStockResponse:
     properties:

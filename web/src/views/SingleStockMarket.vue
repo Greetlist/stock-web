@@ -31,12 +31,20 @@ export default {
   methods: {
     getRecommandStock () {
       var param = {
-        stock_list: [this.stockCode],
+        query_date: "",
+        stock_code: this.stockCode,
         query_data_len: this.queryDataLen
       }
-      axios.post(this.server+'/api/stock/queryStockData', param, { header })
+      axios.post(this.server+'/api/stock/getRecommandStockPrediction', param, { header })
         .then((response) => {
           this.stockDatas = response.data.stock_datas
+          if (response.data.stock_prediction_datas !== undefined) {
+            this.predDatas = response.data.stock_prediction_datas
+            for (var i = 0; i < response.data.stock_datas.length; i++) {
+              this.stockDatas[i].prediction_record = this.predDatas[i].prediction_record
+              this.stockDatas[i].show_msg = this.predDatas[i].show_msg
+            }
+          }
         })
         .catch(function (error) {
           console.log(error)

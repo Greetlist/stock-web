@@ -7,6 +7,7 @@ type QueryStockDataRequest struct {
 }
 type GetRecommandStockRequest struct {
     QueryDateString string `json:"query_date" example:"2021-07-01"`
+    StockCode string `json:"stock_code", example:"002142.SZ"`
     QueryDataLen int `json:"query_data_len" example: 30 binding:"required" `
 }
 // Request Struct end
@@ -21,7 +22,7 @@ type GetAllStockCodeResponse struct {
 }
 
 type GetRecommandStockResponse struct {
-    StockRawData []SingleStockData `json:"stock_datas"`
+    StockRawDatas []SingleStockData `json:"stock_datas"`
     StockPredictDatas []StockPredictItem `json:"stock_prediction_datas"`
 }
 

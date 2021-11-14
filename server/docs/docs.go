@@ -473,6 +473,9 @@ var doc = `{
                 "query_date": {
                     "type": "string",
                     "example": "2021-07-01"
+                },
+                "stock_code": {
+                    "type": "string"
                 }
             }
         },

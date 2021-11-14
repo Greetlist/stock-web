@@ -134,21 +134,33 @@ func GetRecommandStockPrediction(context *gin.Context) {
 	}
     var response model.GetRecommandStockResponse
 
-    predictionDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"))
-    fileInfoList, _ := ioutil.ReadDir(predictionDir)
-    for _, fileItem := range(fileInfoList) {
-        if !strings.HasSuffix(fileItem.Name(), "compared.csv") && strings.HasSuffix(fileItem.Name(), ".csv") {
-            stockCode := strings.ReplaceAll(fileItem.Name(), ".csv", "")
-            var curPredictItem model.StockPredictItem
-            fmt.Printf("%s\n", path.Join(predictionDir, fileItem.Name()))
-            curPredictItem.StockInfo = util.ReadStockBasicInfo(stockCode)[0]
-            curPredictItem.PredictionRecord = util.ReadPredictionData(path.Join(predictionDir, fileItem.Name()), true)
-            curPredictItem.ShowMsg = util.ReadPredictionMsg(path.Join(predictionDir, "stock_Kline", strings.ReplaceAll(fileItem.Name(), "csv", "txt")))
-            if curRawData, err := extractStockRawData(stockCode, request.QueryDateString, request.QueryDataLen); err == nil {
-                response.StockRawData = append(response.StockRawData, curRawData)
-                response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
+    if request.StockCode == "" {
+        predictionDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"))
+        fileInfoList, _ := ioutil.ReadDir(predictionDir)
+        for _, fileItem := range(fileInfoList) {
+            if !strings.HasSuffix(fileItem.Name(), "compared.csv") && strings.HasSuffix(fileItem.Name(), ".csv") {
+                stockCode := strings.ReplaceAll(fileItem.Name(), ".csv", "")
+                var curPredictItem model.StockPredictItem
+                // fmt.Printf("%s\n", path.Join(predictionDir, fileItem.Name()))
+                curPredictItem.StockInfo = util.ReadStockBasicInfo(stockCode)[0]
+                curPredictItem.PredictionRecord = util.ReadPredictionData(path.Join(predictionDir, fileItem.Name()), true)
+                curPredictItem.ShowMsg = util.ReadPredictionMsg(path.Join(predictionDir, "stock_Kline", strings.ReplaceAll(fileItem.Name(), "csv", "txt")))
+                if curRawData, err := extractStockRawData(stockCode, request.QueryDateString, request.QueryDataLen); err == nil {
+                    response.StockRawDatas = append(response.StockRawDatas, curRawData)
+                    response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
+                }
             }
         }
+    } else {
+        lastTradingDateStr := util.LastTradingDayDirStr()
+        singleStockPredFilePath := path.Join(conf.StockPredictionBaseDir, lastTradingDateStr, "stock_Kline", request.StockCode+".csv")
+        var curPredictItem model.StockPredictItem
+        curPredictItem.StockInfo = util.ReadStockBasicInfo(request.StockCode)[0]
+        curPredictItem.PredictionRecord = util.ReadPredictionData(singleStockPredFilePath, true)
+        curPredictItem.ShowMsg = util.ReadPredictionMsg(path.Join(strings.ReplaceAll(singleStockPredFilePath, "csv", "txt")))
+        rawStockData, _ := extractStockRawData(request.StockCode, request.QueryDateString, request.QueryDataLen)
+        response.StockRawDatas = append(response.StockRawDatas, rawStockData)
+        response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
     }
     context.JSON(http.StatusOK, response)
 }

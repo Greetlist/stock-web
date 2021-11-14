@@ -1,5 +1,6 @@
 <template>
   <v-chart class='chart' :option='option' ref="stockGraph"/>
+  <p v-if="this.singleStockDataItem.show_msg !== 'undefined'">{{ this.singleStockDataItem.show_msg }}</p>
   <el-button type="primary" v-on:click="addPreferStock">AddToPreferStock</el-button>
 </template>
 
