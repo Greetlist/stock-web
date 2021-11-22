@@ -1,6 +1,6 @@
 <template>
   <v-chart class='chart' :option='option' ref="indexGraph"/>
-  <p v-if="this.totalIndexData.show_msg !== 'undefined'">{{ this.totalIndexData.show_msg }}</p>
+  <div v-if="this.totalIndexData.show_msg !== 'undefined'" style="white-space: pre-line;">{{ this.totalIndexData.show_msg }}</div>
 </template>
 
 <script>

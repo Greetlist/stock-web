@@ -173,7 +173,7 @@ func ReadPredictionMsg(filePath string) string {
     var res string
     scanner := bufio.NewScanner(file)
     for scanner.Scan() {
-        res += scanner.Text()
+        res += scanner.Text() + "\n"
     }
     return res
 }
