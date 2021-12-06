@@ -4,9 +4,9 @@ const routerHistory = createWebHistory()
 
 const routes = [
   {
-    path: '/dailyRecommand',
-    name: 'DailyRecommand',
-    component: () => import('@/views/DailyRecommandView.vue')
+    path: '/dailyRecommend',
+    name: 'DailyRecommend',
+    component: () => import('@/views/DailyRecommendView.vue')
   },
   {
     path: '/queryStockView',
@@ -14,9 +14,9 @@ const routes = [
     component: () => import('@/views/QueryStockView.vue')
   },
   {
-    path: '/totalMarket',
-    name: 'totalMarket',
-    component: () => import('@/views/TotalMarket.vue')
+    path: '/indexData',
+    name: 'indexData',
+    component: () => import('@/views/DailyIndexDataView.vue')
   },
   {
     path: '/getStockHold',

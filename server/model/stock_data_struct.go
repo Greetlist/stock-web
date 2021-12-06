@@ -50,3 +50,10 @@ type SingleStockData struct {
     StockInfo StockBasicInfo `json:"stock_info"`
     StockRawDatas []StockSinglePeriodData `json:"stock_raw_datas"`
 }
+
+type IndexData struct {
+    IndexName string `json:"index_name"`
+    IndexRawData SinglePredictRecord `json:"index_raw_data"`
+    IndexPredData SinglePredictRecord `json:"index_pred_data"`
+    ShowMsg string `json:"show_msg"`
+}

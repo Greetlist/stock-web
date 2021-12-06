@@ -508,6 +508,20 @@ var doc = `{
         "model.GetTotalMarketIndexDataResponse": {
             "type": "object",
             "properties": {
+                "index_data_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.IndexData"
+                    }
+                }
+            }
+        },
+        "model.IndexData": {
+            "type": "object",
+            "properties": {
+                "index_name": {
+                    "type": "string"
+                },
                 "index_pred_data": {
                     "$ref": "#/definitions/model.SinglePredictRecord"
                 },

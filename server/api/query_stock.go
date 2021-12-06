@@ -182,9 +182,26 @@ func GetTotalMarketIndexData(context *gin.Context) {
     }
     var response model.GetTotalMarketIndexDataResponse
     indexFileDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"), "my_index_Kline")
-    fmt.Printf("%s\n", path.Join(indexFileDir, "all.csv"))
-    response.IndexRawData = util.ReadPredictionData(path.Join(indexFileDir, "all.csv"), false)
-    response.IndexPredData = util.ReadPredictionData(path.Join(indexFileDir, "all.csv"), true)
-    response.ShowMsg = util.ReadPredictionMsg(path.Join(indexFileDir, "all.txt"))
+    fileList, _ := ioutil.ReadDir(indexFileDir)
+    for _, fileItem := range(fileList) {
+        if !strings.HasSuffix(fileItem.Name(), "csv") {
+            continue
+        }
+        indexFileName := fileItem.Name()
+        indexMsgFileName := strings.ReplaceAll(indexFileName, "csv", "txt")
+        var singleIndexData model.IndexData
+        singleIndexData.IndexName = strings.ReplaceAll(indexFileName, ".csv", "")
+        singleIndexData.IndexRawData = util.ReadPredictionData(path.Join(indexFileDir, indexFileName), false)
+        singleIndexData.IndexPredData = util.ReadPredictionData(path.Join(indexFileDir, indexFileName), true)
+        singleIndexData.ShowMsg = util.ReadPredictionMsg(path.Join(indexFileDir, indexMsgFileName))
+        response.IndexDataList = append(response.IndexDataList, singleIndexData)
+    }
+    for index, value := range(response.IndexDataList) {
+        if value.IndexName == "all" {
+            var curIndexData = response.IndexDataList[0]
+            response.IndexDataList[0] = response.IndexDataList[index]
+            response.IndexDataList[index] = curIndexData
+        }
+    }
     context.JSON(http.StatusOK, response)
 }

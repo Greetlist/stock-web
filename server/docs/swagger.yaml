@@ -120,6 +120,15 @@ definitions:
     type: object
   model.GetTotalMarketIndexDataResponse:
     properties:
+      index_data_list:
+        items:
+          $ref: '#/definitions/model.IndexData'
+        type: array
+    type: object
+  model.IndexData:
+    properties:
+      index_name:
+        type: string
       index_pred_data:
         $ref: '#/definitions/model.SinglePredictRecord'
       index_raw_data:

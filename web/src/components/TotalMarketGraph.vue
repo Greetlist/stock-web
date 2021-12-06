@@ -126,9 +126,9 @@ export default {
   },
   mounted: function () {
     this.clearAllData()
-    // this.setAllData()
-    // this.setGraphOption()
-    // this.dispatchGraphAction()
+    this.setAllData()
+    this.setGraphOption()
+    this.dispatchGraphAction()
   },
   watch: {
     totalIndexData: function () {
@@ -198,8 +198,7 @@ export default {
           },
         ],
         title: {
-          text: this.stockCode,
-          subtext: this.stockName
+          text: this.totalIndexData.index_name
         }
       })
     },

@@ -31,10 +31,7 @@ type GetTotalMarketIndexDataRequest struct {
 }
 
 type GetTotalMarketIndexDataResponse struct {
-    IndexRawData SinglePredictRecord `json:"index_raw_data"`
-    IndexPredData SinglePredictRecord `json:"index_pred_data"`
-    ShowMsg string `json:"show_msg"`
+    IndexDataList []IndexData `json:"index_data_list"`
 }
-
 
 // Response Struct end

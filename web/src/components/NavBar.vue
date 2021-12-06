@@ -45,9 +45,9 @@ var menuList = [
     headIcon: 'el-icon-s-data',
     subMenuList: [
       {
-        name: 'Daily OverView',
+        name: 'Daily Stock',
         id: 'daily-overview',
-        route: '/dailyRecommand'
+        route: '/dailyRecommend'
       },
       {
         name: 'Query Stock',
@@ -55,9 +55,9 @@ var menuList = [
         route: '/queryStockView'
       },
       {
-        name: 'Total Market',
-        id: 'total-market',
-        route: '/totalMarket'
+        name: 'Daily Index',
+        id: 'total-index',
+        route: '/indexData'
       }
     ]
   },
