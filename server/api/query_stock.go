@@ -205,3 +205,24 @@ func GetTotalMarketIndexData(context *gin.Context) {
     }
     context.JSON(http.StatusOK, response)
 }
+
+// GetTotalMarketIndexData godoc
+// @Summary Query Market Distribution
+// @Description Return Market Distribution
+// @ID getMarketDistribution
+// @Accept json
+// @Produce json
+// @Param request_json body model.GetMarketDistributionRequest true "Query Index "
+// @Success 200 {object} model.GetMarketDistributionResponse
+// @Router /api/stock/getMarketDistribution [post]
+func GetMarketDistribution(context *gin.Context) {
+    request := model.GetMarketDistributionRequest{}
+    if err := context.BindJSON(&request); err != nil {
+        context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+    var response model.GetMarketDistributionResponse
+    filePath := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"), "summary", "main.csv")
+    response.DistributionDataList = util.ReadDistributionData(filePath)
+    context.JSON(http.StatusOK, response)
+}

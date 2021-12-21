@@ -57,3 +57,9 @@ type IndexData struct {
     IndexPredData SinglePredictRecord `json:"index_pred_data"`
     ShowMsg string `json:"show_msg"`
 }
+
+type DistributionData struct {
+    Large int `json:"large"`
+    Small int `json:"small"`
+    Mid int `json:"mid"`
+}

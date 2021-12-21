@@ -177,3 +177,26 @@ func ReadPredictionMsg(filePath string) string {
     }
     return res
 }
+
+func ReadDistributionData(filePath string) []model.DistributionData {
+    var res []model.DistributionData
+    predFile, err := os.OpenFile(filePath, os.O_RDWR, os.ModePerm)
+    if err != nil {
+        fmt.Printf("Open File Error: %s.\n", err)
+        return res
+    }
+    distDf := dataframe.ReadCSV(predFile)
+
+    midRecords, _ := distDf.Col("med").Int()
+    largeRecords, _ := distDf.Col("large").Int()
+    smallRecords, _ := distDf.Col("small").Int()
+    dataLen := len(midRecords)
+    for i := 0; i < dataLen; i++ {
+        var curItem model.DistributionData
+        curItem.Large = largeRecords[i]
+        curItem.Small = smallRecords[i]
+        curItem.Mid = midRecords[i]
+        res = append(res, curItem)
+    }
+    return res
+}

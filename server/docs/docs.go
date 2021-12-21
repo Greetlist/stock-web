@@ -129,6 +129,38 @@ var doc = `{
                 }
             }
         },
+        "/api/stock/getMarketDistribution": {
+            "post": {
+                "description": "Return Market Distribution",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Query Market Distribution",
+                "operationId": "getMarketDistribution",
+                "parameters": [
+                    {
+                        "description": "Query Index ",
+                        "name": "request_json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetMarketDistributionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetMarketDistributionResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/stock/getRecommandStockPrediction": {
             "post": {
                 "description": "Return Recommand Stock Prediction Data",
@@ -367,6 +399,20 @@ var doc = `{
                 }
             }
         },
+        "model.DistributionData": {
+            "type": "object",
+            "properties": {
+                "large": {
+                    "type": "integer"
+                },
+                "mid": {
+                    "type": "integer"
+                },
+                "small": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.FactorRawData": {
             "type": "object",
             "properties": {
@@ -435,6 +481,26 @@ var doc = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.StockBasicInfo"
+                    }
+                }
+            }
+        },
+        "model.GetMarketDistributionRequest": {
+            "type": "object",
+            "properties": {
+                "query_date": {
+                    "type": "string",
+                    "example": "2021-07-01"
+                }
+            }
+        },
+        "model.GetMarketDistributionResponse": {
+            "type": "object",
+            "properties": {
+                "distribution_data_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.DistributionData"
                     }
                 }
             }

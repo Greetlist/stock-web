@@ -27,6 +27,11 @@ const routes = [
     path: '/showSingleStockMarket',
     name: 'showSingleStockMarket',
     component: () => import('@/views/SingleStockMarket.vue')
+  },
+  {
+    path: '/marketDistribution',
+    name: 'showMarketDistribution',
+    component: () => import('@/views/DailyMarketDistributionView.vue')
   }
 ]
 

@@ -28,6 +28,15 @@ definitions:
       is_success:
         type: boolean
     type: object
+  model.DistributionData:
+    properties:
+      large:
+        type: integer
+      mid:
+        type: integer
+      small:
+        type: integer
+    type: object
   model.FactorRawData:
     properties:
       ema13:
@@ -73,6 +82,19 @@ definitions:
       stock_info_list:
         items:
           $ref: '#/definitions/model.StockBasicInfo'
+        type: array
+    type: object
+  model.GetMarketDistributionRequest:
+    properties:
+      query_date:
+        example: "2021-07-01"
+        type: string
+    type: object
+  model.GetMarketDistributionResponse:
+    properties:
+      distribution_data_list:
+        items:
+          $ref: '#/definitions/model.DistributionData'
         type: array
     type: object
   model.GetPreferStockRequest:
@@ -350,6 +372,27 @@ paths:
           schema:
             $ref: '#/definitions/model.MarketRawData'
       summary: Query Daily Calc Stock Data
+  /api/stock/getMarketDistribution:
+    post:
+      consumes:
+      - application/json
+      description: Return Market Distribution
+      operationId: getMarketDistribution
+      parameters:
+      - description: 'Query Index '
+        in: body
+        name: request_json
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetMarketDistributionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetMarketDistributionResponse'
+      summary: Query Market Distribution
   /api/stock/getRecommandStockPrediction:
     post:
       consumes:

@@ -34,4 +34,11 @@ type GetTotalMarketIndexDataResponse struct {
     IndexDataList []IndexData `json:"index_data_list"`
 }
 
+type GetMarketDistributionRequest struct {
+    QueryDateString string `json:"query_date" example:"2021-07-01"`
+}
+
+type GetMarketDistributionResponse struct {
+    DistributionDataList []DistributionData `json:"distribution_data_list"`
+}
 // Response Struct end

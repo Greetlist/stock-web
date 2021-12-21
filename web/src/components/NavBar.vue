@@ -58,6 +58,11 @@ var menuList = [
         name: 'Daily Index',
         id: 'total-index',
         route: '/indexData'
+      },
+      {
+        name: 'Market Distribution',
+        id: 'market-distribution',
+        route: '/marketDistribution'
       }
     ]
   },
