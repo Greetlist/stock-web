@@ -18,17 +18,19 @@ func selectExchange(stockCode string) string {
 }
 
 
-func LastTradingDayDirStr() string {
+// return today_str and last_trading_date_str
+func LastTradingDayDirStr() (string, string) {
     tradingDayPath := path.Join(conf.StockRawBaseDir, "trading_date.csv")
     f, _ := os.OpenFile(tradingDayPath, os.O_RDWR, os.ModePerm)
     df := dataframe.ReadCSV(f)
-    todayDateStr := strings.ReplaceAll(time.Now().Format("2006-01-02"), "-", "")
+    todayStr := time.Now().Format("2006-01-02")
+    todayDateStr := strings.ReplaceAll(todayStr, "-", "")
     tradeDateList := df.Col("cal_date").Records()
     for index, value := range(tradeDateList) {
         if value >= todayDateStr {
             targetDate := tradeDateList[index-1]
-            return targetDate[0:4] + "/" + targetDate[4:6] + "/" + targetDate[6:]
+            return strings.ReplaceAll(todayStr, "-", "/"), targetDate[0:4] + "/" + targetDate[4:6] + "/" + targetDate[6:]
         }
     }
-    return "1970/01/01"
+    return strings.ReplaceAll(todayStr, "-", "/"), "1970/01/01"
 }

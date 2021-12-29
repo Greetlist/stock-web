@@ -6,7 +6,7 @@ import (
     "strings"
     "fmt"
     "time"
-    _ "os"
+    "os"
     "path"
     "errors"
     "github.com/gin-gonic/gin"
@@ -152,7 +152,13 @@ func GetRecommandStockPrediction(context *gin.Context) {
             }
         }
     } else {
-        lastTradingDateStr := util.LastTradingDayDirStr()
+        todayDateStr, lastTradingDateStr := util.LastTradingDayDirStr()
+        fmt.Printf("%s %s\n", todayDateStr, lastTradingDateStr)
+        if _, err := os.Stat(path.Join(conf.StockPredictionBaseDir, todayDateStr)); err == nil {
+            lastTradingDateStr = todayDateStr
+        }
+        fmt.Printf("%s\n", path.Join(conf.StockPredictionBaseDir, lastTradingDateStr))
+        fmt.Printf("%s %s\n", todayDateStr, lastTradingDateStr)
         singleStockPredFilePath := path.Join(conf.StockPredictionBaseDir, lastTradingDateStr, "stock_Kline", request.StockCode+".csv")
         var curPredictItem model.StockPredictItem
         curPredictItem.StockInfo = util.ReadStockBasicInfo(request.StockCode)[0]
