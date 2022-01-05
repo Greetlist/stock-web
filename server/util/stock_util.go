@@ -8,7 +8,28 @@ import (
     "fmt"
     "github.com/go-gota/gota/dataframe"
     "greetlist/stock-web/server/conf"
+    "greetlist/stock-web/server/model"
 )
+
+var financeTypeMap map[string]string
+func init() {
+    financeTypeMap = make(map[string]string)
+    financeTypeList := []string{model.Stock, model.Index}
+    for _, value := range(financeTypeList) {
+        codeList := readAllFinanceTypeCode(value)
+        for _, code := range(codeList) {
+            financeTypeMap[code] = value
+        }
+    }
+}
+
+func readAllFinanceTypeCode(financeType string) []string {
+    rawFilePath := path.Join(conf.StockRawBaseDir, "total_" + financeType + ".csv")
+    f, _ := os.OpenFile(rawFilePath, os.O_RDWR, os.ModePerm)
+    df := dataframe.ReadCSV(f)
+    codeList := df.Col("ts_code").Records()
+    return codeList
+}
 
 func selectExchange(stockCode string) string {
     if strings.Contains(stockCode, "SH") {
@@ -18,7 +39,6 @@ func selectExchange(stockCode string) string {
     }
     return ""
 }
-
 
 // return today_str and last_trading_date_str
 func LastTradingDayDirStr() (string, string) {
@@ -55,3 +75,6 @@ func ReadPredictionFileInOrder(filePath string) []string {
     return res
 }
 
+func GetCodeFinanceType(code string) string {
+    return financeTypeMap[code]
+}

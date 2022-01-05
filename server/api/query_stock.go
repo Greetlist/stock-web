@@ -137,13 +137,14 @@ func GetRecommandStockPrediction(context *gin.Context) {
     if request.StockCode == "" {
         predictionDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"))
         recommendListFile := path.Join(predictionDir, "summary", "main.txt")
-        recommendStockList := util.ReadPredictionFileInOrder(recommendListFile)
+        recommendStockList := []string{"000001.SH", "399001.SZ", "399006.SZ"}
+        recommendStockList = append(recommendStockList, util.ReadPredictionFileInOrder(recommendListFile)...)
         for _, stockCode := range(recommendStockList) {
             var curPredictItem model.StockPredictItem
-            // fmt.Printf("%s\n", path.Join(predictionDir, fileItem.Name()))
             curPredictItem.StockInfo = util.ReadStockBasicInfo(stockCode)[0]
-            curPredictItem.PredictionRecord = util.ReadPredictionData(path.Join(predictionDir, "stock_Kline", stockCode + ".csv"), true)
-            curPredictItem.ShowMsg = util.ReadPredictionMsg(path.Join(predictionDir, "stock_Kline", stockCode + ".txt"))
+            financeType := util.GetCodeFinanceType(stockCode)
+            curPredictItem.PredictionRecord = util.ReadPredictionData(path.Join(predictionDir, financeType + "_Kline", stockCode + ".csv"), true)
+            curPredictItem.ShowMsg = util.ReadPredictionMsg(path.Join(predictionDir, financeType + "_Kline", stockCode + ".txt"))
             if curRawData, err := extractStockRawData(stockCode, request.QueryDateString, request.QueryDataLen); err == nil {
                 response.StockRawDatas = append(response.StockRawDatas, curRawData)
                 response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
