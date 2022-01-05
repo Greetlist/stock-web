@@ -4,6 +4,8 @@ import (
     "os"
     "time"
     "path"
+    "bufio"
+    "fmt"
     "github.com/go-gota/gota/dataframe"
     "greetlist/stock-web/server/conf"
 )
@@ -34,3 +36,22 @@ func LastTradingDayDirStr() (string, string) {
     }
     return strings.ReplaceAll(todayStr, "-", "/"), "1970/01/01"
 }
+
+func ReadPredictionFileInOrder(filePath string) []string {
+    var res []string
+    file, err := os.Open(filePath)
+    if err != nil {
+        fmt.Printf("Open File Error is : %s", err)
+        return res
+    }
+    defer file.Close()
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+        if strings.HasSuffix(line, "SH") || strings.HasSuffix(line, "SZ") {
+            res = append(res, line)
+        }
+    }
+    return res
+}
+
