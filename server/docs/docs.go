@@ -93,6 +93,24 @@ var doc = `{
                 }
             }
         },
+        "/api/query/getAllAlgoName": {
+            "get": {
+                "description": "Return All Algo Name",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Query All Algo Name",
+                "operationId": "getAllAlgoName",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AllAlgoNameResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/stock/getAllStockCode": {
             "get": {
                 "description": "Return All Stock Code",
@@ -377,6 +395,17 @@ var doc = `{
                 }
             }
         },
+        "model.AllAlgoNameResponse": {
+            "type": "object",
+            "properties": {
+                "algo_name_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model.DeletePreferStockRequest": {
             "type": "object",
             "properties": {
@@ -488,6 +517,9 @@ var doc = `{
         "model.GetMarketDistributionRequest": {
             "type": "object",
             "properties": {
+                "algo_name": {
+                    "type": "string"
+                },
                 "query_date": {
                     "type": "string",
                     "example": "2021-07-01"
@@ -533,6 +565,9 @@ var doc = `{
         "model.GetRecommandStockRequest": {
             "type": "object",
             "properties": {
+                "algo_name": {
+                    "type": "string"
+                },
                 "query_data_len": {
                     "type": "integer"
                 },
@@ -565,6 +600,9 @@ var doc = `{
         "model.GetTotalMarketIndexDataRequest": {
             "type": "object",
             "properties": {
+                "algo_name": {
+                    "type": "string"
+                },
                 "query_date": {
                     "type": "string",
                     "example": "2021-07-01"
@@ -690,14 +728,14 @@ var doc = `{
         "model.QueryStockDataRequest": {
             "type": "object",
             "properties": {
+                "algo_name": {
+                    "type": "string"
+                },
                 "query_data_len": {
                     "type": "integer"
                 },
-                "stock_list": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "stock_code": {
+                    "type": "string"
                 }
             }
         },
@@ -708,6 +746,12 @@ var doc = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.SingleStockData"
+                    }
+                },
+                "stock_prediction_datas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockPredictItem"
                     }
                 }
             }

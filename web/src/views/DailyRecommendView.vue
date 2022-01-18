@@ -1,11 +1,15 @@
 <template>
-  <el-date-picker
-      v-model="selectDate"
-      type="date"
-      placeholder="Select Date"
-      value-format="YYYY-MM-DD"
-      v-on:change="getRecommandStock">
-  </el-date-picker>
+  <el-row>
+    <el-col>
+      <el-date-picker
+          v-model="selectDate"
+          type="date"
+          placeholder="Select Date"
+          value-format="YYYY-MM-DD"
+          v-on:change="getRecommandStock">
+      </el-date-picker>
+    </el-col>
+  </el-row>
   <div>
     <StockGraph v-for="(stockData, index) in stockDatasSlice" v-bind:singleStockDataItem="stockData" :key="index"></StockGraph>
   </div>
@@ -22,7 +26,8 @@
 
 <script>
 import StockGraph from '@/components/StockGraph.vue'
-import { getCurrentInstance } from 'vue'
+import { getCurrentInstance, h } from 'vue'
+import { ElNotification } from 'element-plus'
 const axios = require('axios').default
 const header = {
   'Access-Control-Allow-Origin': '*'
@@ -45,15 +50,30 @@ export default {
   },
   created () {
     this.server = getCurrentInstance().appContext.config.globalProperties.$server
-    const today = new Date()
-    this.selectDate = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate()
+    //const today = new Date()
+    //this.selectDate = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate()
     this.getRecommandStock()
   },
+  watch: {
+    '$store.state.selectAlgo': function () {
+      this.getRecommandStock()
+    }
+  },
   methods: {
+    clearDatas() {
+      this.stockDatas = ''
+      this.totalPageCount = 1
+      this.stockDatasSlice = ''
+      this.predDatas = ''
+    },
     getRecommandStock () {
+      if (this.selectDate === '' || this.$store.state.selectAlgo === '') {
+        return
+      }
       var param = {
         query_date: this.selectDate,
-        stock_code: ""
+        stock_code: "",
+        algo_name: this.$store.state.selectAlgo
       }
       axios.post(this.server+'/api/stock/getRecommandStockPrediction', param, { header })
         .then((response) => {
@@ -66,8 +86,11 @@ export default {
               this.stockDatasSlice[i].prediction_record = this.predDatas[i].prediction_record
             }
           }
+          this.notiSuccess()
         })
-        .catch(function (error) {
+        .catch((error) => {
+          this.clearDatas()
+          this.notiFailed("Data May Not Exists!")
           console.log(error)
         })
     },
@@ -80,6 +103,20 @@ export default {
           this.stockDatasSlice[i].prediction_record = this.predDatas[i+startIndex].prediction_record
         }
       }
+    },
+    notiSuccess () {
+      ElNotification({
+        title: 'Result',
+        message: h('i', {style: 'color: green'}, 'Query Success'),
+        type: 'success'
+      })
+    },
+    notiFailed (errMsg) {
+      ElNotification({
+        title: 'Result',
+        message: h('i', {style: 'color: red'}, errMsg),
+        type: 'error'
+      })
     }
   }
 }

@@ -5,7 +5,6 @@ import (
     "io/ioutil"
     "strings"
     "fmt"
-    "time"
     "os"
     "path"
     "errors"
@@ -31,12 +30,19 @@ func QueryStockData(context *gin.Context) {
         return
     }
     var response model.QueryStockDataResponse
-    todayDateStr := time.Now().Format("2006-01-02")
-    for _, stockCode := range(request.StockList) {
-        if data, err := extractStockRawData(stockCode, todayDateStr, request.QueryDataLen); err == nil {
-            response.StockTotalDatas = append(response.StockTotalDatas, data)
-        }
+    todayDateStr, lastTradingDateStr := util.LastTradingDayDirStr()
+    fmt.Printf("%s %s\n", todayDateStr, lastTradingDateStr)
+    if _, err := os.Stat(path.Join(conf.StockPredictionBaseDir, request.AlgoName, todayDateStr)); err == nil {
+        lastTradingDateStr = todayDateStr
     }
+    singleStockPredFilePath := path.Join(conf.StockPredictionBaseDir, request.AlgoName, lastTradingDateStr, "stock_Kline", request.StockCode+".csv")
+    var curPredictItem model.StockPredictItem
+    curPredictItem.StockInfo = util.ReadStockBasicInfo(request.StockCode)[0]
+    curPredictItem.PredictionRecord = util.ReadPredictionData(singleStockPredFilePath, true)
+    curPredictItem.ShowMsg = util.ReadPredictionMsg(path.Join(strings.ReplaceAll(singleStockPredFilePath, "csv", "txt")))
+    rawStockData, _ := extractStockRawData(request.StockCode, lastTradingDateStr, request.QueryDataLen)
+    response.StockRawDatas = append(response.StockRawDatas, rawStockData)
+    response.StockPredictDatas = append(response.StockPredictDatas, curPredictItem)
     context.JSON(http.StatusOK, response)
 }
 
@@ -135,8 +141,12 @@ func GetRecommandStockPrediction(context *gin.Context) {
     var response model.GetRecommandStockResponse
 
     if request.StockCode == "" {
-        predictionDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"))
+        predictionDir := path.Join(conf.StockPredictionBaseDir, request.AlgoName, strings.ReplaceAll(request.QueryDateString, "-", "/"))
         recommendListFile := path.Join(predictionDir, "summary", "main.txt")
+        if !util.IsFileExists(recommendListFile) {
+            context.JSON(http.StatusInternalServerError, response)
+            return
+        }
         recommendStockList := []string{"000001.SH", "399001.SZ", "399006.SZ"}
         recommendStockList = append(recommendStockList, util.ReadPredictionFileInOrder(recommendListFile)...)
         for _, stockCode := range(recommendStockList) {
@@ -153,12 +163,12 @@ func GetRecommandStockPrediction(context *gin.Context) {
     } else {
         todayDateStr, lastTradingDateStr := util.LastTradingDayDirStr()
         fmt.Printf("%s %s\n", todayDateStr, lastTradingDateStr)
-        if _, err := os.Stat(path.Join(conf.StockPredictionBaseDir, todayDateStr)); err == nil {
+        if _, err := os.Stat(path.Join(conf.StockPredictionBaseDir, request.AlgoName, todayDateStr)); err == nil {
             lastTradingDateStr = todayDateStr
         }
-        fmt.Printf("%s\n", path.Join(conf.StockPredictionBaseDir, lastTradingDateStr))
+        fmt.Printf("%s\n", path.Join(conf.StockPredictionBaseDir, request.AlgoName, lastTradingDateStr))
         fmt.Printf("%s %s\n", todayDateStr, lastTradingDateStr)
-        singleStockPredFilePath := path.Join(conf.StockPredictionBaseDir, lastTradingDateStr, "stock_Kline", request.StockCode+".csv")
+        singleStockPredFilePath := path.Join(conf.StockPredictionBaseDir, request.AlgoName, lastTradingDateStr, "stock_Kline", request.StockCode+".csv")
         var curPredictItem model.StockPredictItem
         curPredictItem.StockInfo = util.ReadStockBasicInfo(request.StockCode)[0]
         curPredictItem.PredictionRecord = util.ReadPredictionData(singleStockPredFilePath, true)
@@ -186,7 +196,7 @@ func GetTotalMarketIndexData(context *gin.Context) {
         return
     }
     var response model.GetTotalMarketIndexDataResponse
-    indexFileDir := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"), "my_index_Kline")
+    indexFileDir := path.Join(conf.StockPredictionBaseDir, request.AlgoName, strings.ReplaceAll(request.QueryDateString, "-", "/"), "my_index_Kline")
     fileList, _ := ioutil.ReadDir(indexFileDir)
     for _, fileItem := range(fileList) {
         if !strings.HasSuffix(fileItem.Name(), "csv") {
@@ -227,7 +237,7 @@ func GetMarketDistribution(context *gin.Context) {
         return
     }
     var response model.GetMarketDistributionResponse
-    filePath := path.Join(conf.StockPredictionBaseDir, strings.ReplaceAll(request.QueryDateString, "-", "/"), "summary", "main.csv")
+    filePath := path.Join(conf.StockPredictionBaseDir, request.AlgoName, strings.ReplaceAll(request.QueryDateString, "-", "/"), "summary", "main.csv")
     response.DistributionDataList = util.ReadDistributionData(filePath)
     context.JSON(http.StatusOK, response)
 }

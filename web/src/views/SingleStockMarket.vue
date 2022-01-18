@@ -28,12 +28,21 @@ export default {
     console.log(this.stockCode)
     this.getRecommandStock()
   },
+  watch: {
+    '$store.state.selectAlgo': function () {
+      this.getRecommandStock()
+    }
+  },
   methods: {
     getRecommandStock () {
+      if (this.$store.state.selectAlgo === '') {
+        return
+      }
       var param = {
         query_date: "",
         stock_code: this.stockCode,
-        query_data_len: this.queryDataLen
+        query_data_len: this.queryDataLen,
+        algo_name: this.$store.state.selectAlgo
       }
       axios.post(this.server+'/api/stock/getRecommandStockPrediction', param, { header })
         .then((response) => {

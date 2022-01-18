@@ -38,5 +38,8 @@ func InitRouterAndMiddleware() *gin.Engine {
     // UserRouterGroup.Use(midware.CheckLoginStatus())
     routers.InitOwnPreferStockOperationApiRouter(ApiRouterGroup)
 
+    //一些不影响主逻辑的查询
+    routers.InitQueryInfoRouter(ApiRouterGroup)
+
     return Router
 }

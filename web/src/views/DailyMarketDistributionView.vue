@@ -33,10 +33,17 @@ export default {
   created () {
     this.server = getCurrentInstance().appContext.config.globalProperties.$server
   },
+  watch: {
+    '$store.state.selectAlgo': function () {
+      this.getMarketDistribution()
+    }
+  },
   methods: {
     getMarketDistribution () {
+      this.marketDistributionData = []
       var param = {
-        query_date: this.selectDate
+        query_date: this.selectDate,
+        algo_name: this.$store.state.selectAlgo
       }
       axios.post(this.server+'/api/stock/getMarketDistribution', param, { header })
         .then((response) => {

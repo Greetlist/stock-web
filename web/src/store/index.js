@@ -2,11 +2,15 @@ import Vuex from 'vuex'
 
 const store = new Vuex.Store({
   state: {
-    collapse: false
+    collapse: false,
+    selectAlgo: ''
   },
   mutations: {
     changeCollapse (state, targetCollpaseState) {
       state.collapse = targetCollpaseState
+    },
+    changeSelectAlgo (state, algo) {
+      state.selectAlgo = algo
     }
   }
 })

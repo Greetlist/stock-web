@@ -35,9 +35,23 @@
       </el-menu-item-group>
     </el-sub-menu>
   </el-menu>
+  <el-select v-model="this.$store.state.selectAlgo" placeholder="Select Algo" size="large" v-on:change="onChangeSelectAlgo">
+    <el-option
+      v-for="algo in algoList"
+      :key="algo"
+      :label="algo"
+      :value="algo"
+      >
+    </el-option>
+  </el-select>
 </template>
 
 <script>
+import { getCurrentInstance } from 'vue'
+const axios = require('axios').default
+const header = {
+  'Access-Control-Allow-Origin': '*'
+}
 var menuList = [
   {
     name: 'Stock OverView',
@@ -122,65 +136,19 @@ var menuList = [
       }
     ]
   }
-//  {
-//    name: 'Report',
-//    id: 'report',
-//    headIcon: 'el-icon-printer',
-//    subMenuList: [
-//      {
-//        name: 'Index OverView',
-//        id: 'index-overview',
-//        route: '#'
-//      },
-//      {
-//        name: 'Other Format',
-//        id: 'other-format',
-//        route: '#'
-//      }
-//    ]
-//  },
-//  {
-//    name: 'Settings',
-//    id: 'settings',
-//    headIcon: 'el-icon-setting',
-//    subMenuList: [
-//      {
-//        name: 'Server Settings',
-//        id: 'server-settings',
-//        route: '#'
-//      },
-//      {
-//        name: 'Other Settings',
-//        id: 'other-settings',
-//        route: '#'
-//      }
-//    ]
-//  },
-//  {
-//    name: 'Enjoy PornHub',
-//    id: 'pornhub',
-//    headIcon: 'el-icon-s-promotion',
-//    subMenuList: [
-//      {
-//        name: 'Asia',
-//        id: 'asia',
-//        route: 'cn.pornhub.com'
-//      },
-//      {
-//        name: 'Japan',
-//        id: 'japan',
-//        route: 'japan.pornhub.com'
-//      }
-//    ]
-//  }
 ]
 
 export default {
   name: 'HeadNavBar',
   data: function () {
     return {
-      menuList: menuList
+      menuList: menuList,
+      server: ''
     }
+  },
+  created () {
+    this.server = getCurrentInstance().appContext.config.globalProperties.$server
+    this.getAlgoList()
   },
   computed: {
     collapse: {
@@ -188,6 +156,20 @@ export default {
         return this.$store.state.collapse
       }
     }
+  },
+  methods: {
+    onChangeSelectAlgo(val) {
+      this.$store.commit('changeSelectAlgo', val)
+    },
+    getAlgoList() {
+      axios.get(this.server+'/api/query/getAllAlgoName', { header })
+        .then((response) => {
+          this.algoList = response.data.algo_name_list
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
   }
 }
 </script>

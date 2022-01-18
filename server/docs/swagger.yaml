@@ -14,6 +14,13 @@ definitions:
       is_success:
         type: boolean
     type: object
+  model.AllAlgoNameResponse:
+    properties:
+      algo_name_list:
+        items:
+          type: string
+        type: array
+    type: object
   model.DeletePreferStockRequest:
     properties:
       account:
@@ -86,6 +93,8 @@ definitions:
     type: object
   model.GetMarketDistributionRequest:
     properties:
+      algo_name:
+        type: string
       query_date:
         example: "2021-07-01"
         type: string
@@ -115,6 +124,8 @@ definitions:
     type: object
   model.GetRecommandStockRequest:
     properties:
+      algo_name:
+        type: string
       query_data_len:
         type: integer
       query_date:
@@ -136,6 +147,8 @@ definitions:
     type: object
   model.GetTotalMarketIndexDataRequest:
     properties:
+      algo_name:
+        type: string
       query_date:
         example: "2021-07-01"
         type: string
@@ -217,18 +230,22 @@ definitions:
     type: object
   model.QueryStockDataRequest:
     properties:
+      algo_name:
+        type: string
       query_data_len:
         type: integer
-      stock_list:
-        items:
-          type: string
-        type: array
+      stock_code:
+        type: string
     type: object
   model.QueryStockDataResponse:
     properties:
       stock_datas:
         items:
           $ref: '#/definitions/model.SingleStockData'
+        type: array
+      stock_prediction_datas:
+        items:
+          $ref: '#/definitions/model.StockPredictItem'
         type: array
     type: object
   model.SinglePredictRecord:
@@ -348,6 +365,18 @@ paths:
           schema:
             $ref: '#/definitions/model.LogoutResponse'
       summary: User Logout
+  /api/query/getAllAlgoName:
+    get:
+      description: Return All Algo Name
+      operationId: getAllAlgoName
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AllAlgoNameResponse'
+      summary: Query All Algo Name
   /api/stock/getAllStockCode:
     get:
       description: Return All Stock Code

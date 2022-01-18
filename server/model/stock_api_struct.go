@@ -2,19 +2,22 @@ package model
 
 // Request Struct start
 type QueryStockDataRequest struct {
-    StockList []string `json:"stock_list" example:['000001', '002142', ...] binding:"required"`
+    StockCode string `json:"stock_code" example:'000001' binding:"required"`
     QueryDataLen int `json:"query_data_len" example: 30 binding:"required" `
+    AlgoName string `json:"algo_name", example:"final"`
 }
 type GetRecommandStockRequest struct {
     QueryDateString string `json:"query_date" example:"2021-07-01"`
     StockCode string `json:"stock_code", example:"002142.SZ"`
     QueryDataLen int `json:"query_data_len" example: 30 binding:"required" `
+    AlgoName string `json:"algo_name", example:"final"`
 }
 // Request Struct end
 
 // Response Struct start
 type QueryStockDataResponse struct {
-    StockTotalDatas []SingleStockData `json:"stock_datas"`
+    StockRawDatas []SingleStockData `json:"stock_datas"`
+    StockPredictDatas []StockPredictItem `json:"stock_prediction_datas"`
 }
 
 type GetAllStockCodeResponse struct {
@@ -28,6 +31,7 @@ type GetRecommandStockResponse struct {
 
 type GetTotalMarketIndexDataRequest struct {
     QueryDateString string `json:"query_date" example:"2021-07-01"`
+    AlgoName string `json:"algo_name", example:"final"`
 }
 
 type GetTotalMarketIndexDataResponse struct {
@@ -36,6 +40,7 @@ type GetTotalMarketIndexDataResponse struct {
 
 type GetMarketDistributionRequest struct {
     QueryDateString string `json:"query_date" example:"2021-07-01"`
+    AlgoName string `json:"algo_name", example:"final"`
 }
 
 type GetMarketDistributionResponse struct {

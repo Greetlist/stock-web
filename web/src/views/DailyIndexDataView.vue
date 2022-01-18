@@ -48,10 +48,20 @@ export default {
     // this.selectDate = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate()
     // this.getRecommandIndex()
   },
+  watch: {
+    '$store.state.selectAlgo': function () {
+      this.getRecommandIndex()
+    }
+  },
   methods: {
     getRecommandIndex () {
+      if (this.selectDate === '' || this.$store.state.selectAlgo === '') {
+        console.log("Param is Invalid")
+        return
+      }
       var param = {
-        query_date: this.selectDate
+        query_date: this.selectDate,
+        algo_name: this.$store.state.selectAlgo
       }
       axios.post(this.server+'/api/stock/getTotalMarketIndexData', param, { header })
         .then((response) => {
